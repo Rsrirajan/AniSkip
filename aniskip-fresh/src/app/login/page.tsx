@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import Image from 'next/image';
 
 export default function LoginPage() {
   const [activeTab, setActiveTab] = useState('login');
@@ -61,7 +60,7 @@ export default function LoginPage() {
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>
                   <p className="text-gray-600">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <button
                       onClick={() => setActiveTab('signup')}
                       className="text-violet-500 hover:text-violet-600 font-medium cursor-pointer"

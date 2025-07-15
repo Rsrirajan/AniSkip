@@ -8,7 +8,7 @@ import Header from '../components/Header';
 export default function Home() {
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // TODO: Replace with real auth
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // TODO: Replace with real auth
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       {/* Header */}
-      <Header isLoggedIn={isLoggedIn} />
+      <Header isLoggedIn={false} />
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-8 bg-transparent p-0 mt-10">

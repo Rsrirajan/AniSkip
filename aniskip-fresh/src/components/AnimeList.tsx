@@ -36,7 +36,7 @@ function matchesSearch(anime: Anime, query: string) {
   if (!query) return true;
   const q = query.toLowerCase();
   const tokens = q.split(/\s+/);
-  const altTitles = Array.isArray((anime as any).altTitles) ? (anime as any).altTitles : [];
+  const altTitles = Array.isArray((anime as unknown as { altTitles: string[] }).altTitles) ? (anime as unknown as { altTitles: string[] }).altTitles : [];
   const allTitles = [anime.title, ...altTitles].map((t) => t.toLowerCase());
   // Token match: all tokens must appear in any title
   return allTitles.some((title) => tokens.every((token) => title.includes(token)));
@@ -58,13 +58,22 @@ function Spinner() {
   return <AiOutlineLoading3Quarters className="animate-spin text-3xl text-violet-400 mx-auto my-8" />;
 }
 
+type JikanEpisode = {
+  mal_id?: number;
+  episode_id?: number;
+  number?: number;
+  title?: string;
+  filler?: boolean;
+  recap?: boolean;
+};
+
 export default function AnimeList({ searchQuery }: AnimeListProps) {
   const [animeList, setAnimeList] = useState<Anime[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Anime | null>(null);
-  const [bookmarks, setBookmarks] = useState<any[]>([]);
+  const [bookmarks, setBookmarks] = useState<unknown[]>([]);
   const [clickCounts, setClickCounts] = useState<{[id: number]: number}>({});
-  const [liveResults, setLiveResults] = useState<any[]>([]);
+  const [liveResults, setLiveResults] = useState<unknown[]>([]);
   const [liveLoading, setLiveLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -138,13 +147,12 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
             setLiveLoading(false);
           });
         }
-      } catch (err) {
+      } catch {
         setError('Unexpected error during search.');
         setLiveResults([]);
         setLiveLoading(false);
       }
     }, 350);
-    // eslint-disable-next-line
   }, [searchQuery]);
 
   // Toast auto-hide
@@ -164,17 +172,21 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
   }
 
   // Handle click on live result: fetch full details, add to Supabase if not present, show modal
-  async function handleLiveCardClick(liveAnime: any) {
+  async function handleLiveCardClick(liveAnime: unknown) {
     setLiveLoading(true);
-    const details = await jikanAnimeDetails(liveAnime.mal_id);
+    const details = await jikanAnimeDetails((liveAnime as { mal_id: number }).mal_id);
     // Map Jikan data to local Anime type
     const mapped: Anime = {
       id: details.mal_id,
       title: details.title,
-      altTitles: [details.title_english, details.title_japanese, ...(details.titles?.map(t => t.title) || [])].filter(Boolean),
+      altTitles: [
+        details.title_english,
+        details.title_japanese,
+        ...(details.titles?.map((t: { title: string }) => t.title) || [])
+      ].filter(Boolean),
       image: details.images?.webp?.large_image_url || details.images?.jpg?.large_image_url || details.images?.jpg?.image_url || '',
       synopsis: details.synopsis || '',
-      episodes: (details.episodes || []).map((ep: any) => ({
+      episodes: (details.episodes || []).map((ep: JikanEpisode) => ({
         number: ep.mal_id || ep.episode_id || ep.number,
         title: ep.title || '',
         filler: ep.filler || false,
@@ -186,7 +198,7 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
       aired: details.aired?.prop?.from?.year ? String(details.aired.prop.from.year) : (details.aired?.string || ''),
     };
     // Check if already in Supabase by mal_id
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing } = await supabase
       .from('anime')
       .select('*')
       .eq('id', mapped.id)
@@ -210,8 +222,8 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
 
   function toggleBookmark(anime: Anime) {
     let updated;
-    if (bookmarks.some((a) => a.id === anime.id)) {
-      updated = bookmarks.filter((a) => a.id !== anime.id);
+    if (bookmarks.some((a) => (a as { id: number }).id === anime.id)) {
+      updated = bookmarks.filter((a) => (a as { id: number }).id !== anime.id);
     } else {
       updated = [...bookmarks, { id: anime.id, title: anime.title, image: anime.image }];
     }
@@ -250,43 +262,58 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
                   <span>Results</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {liveResults.map((anime) => (
-                    <div
-                      key={anime.mal_id}
-                      className={`bg-white rounded-2xl shadow-xl transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border border-blue-300 group relative hover:-translate-y-2 hover:shadow-2xl ${liveLoading ? 'pointer-events-none opacity-60' : ''}`}
-                      tabIndex={0}
-                      role="button"
-                      aria-label={`Open details for ${anime.title}`}
-                      onClick={() => !liveLoading && handleLiveCardClick(anime)}
-                      onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !liveLoading) handleLiveCardClick(anime); }}
-                    >
-                      <div className="relative w-full aspect-[3/4] bg-gray-100">
-                        <img
-                          src={anime.images?.webp?.large_image_url || anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '/file.svg'}
-                          alt={anime.title}
-                          className="object-cover rounded-t-2xl w-full h-full"
-                          onError={e => { (e.target as HTMLImageElement).src = '/file.svg'; }}
-                        />
-                        <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded font-bold shadow">Live</span>
-                      </div>
-                      <div className="p-5 flex-1 flex flex-col">
-                        <h3 className="font-bold text-xl text-gray-800 mb-1 truncate" title={anime.title}>{anime.title}</h3>
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="flex items-center gap-1 text-amber-500 font-bold text-lg"><FaStar className="inline-block" /> {anime.score || '--'}</span>
-                          <span className="flex items-center gap-1 text-gray-500 text-sm">{anime.episodes || '--'} eps</span>
-                          <span className="text-gray-500 text-sm">{anime.status || ''}</span>
+                  {liveResults.map((anime) => {
+                    const jikanAnime = anime as {
+                      mal_id: number;
+                      title: string;
+                      images?: {
+                        webp?: Record<string, string>;
+                        jpg?: Record<string, string>;
+                      };
+                      score?: number;
+                      episodes?: number;
+                      status?: string;
+                    };
+                    return (
+                      <div
+                        key={jikanAnime.mal_id}
+                        className={`bg-white rounded-2xl shadow-xl transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border border-blue-300 group relative hover:-translate-y-2 hover:shadow-2xl ${liveLoading ? 'pointer-events-none opacity-60' : ''}`}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`Open details for ${jikanAnime.title}`}
+                        onClick={() => !liveLoading && handleLiveCardClick(jikanAnime)}
+                        onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !liveLoading) handleLiveCardClick(jikanAnime); }}
+                      >
+                        <div className="relative w-full aspect-[3/4] bg-gray-100">
+                          <Image
+                            src={jikanAnime.images?.webp?.large_image_url || jikanAnime.images?.jpg?.large_image_url || jikanAnime.images?.jpg?.image_url || '/file.svg'}
+                            alt={jikanAnime.title}
+                            width={300}
+                            height={400}
+                            className="object-cover rounded-t-2xl w-full h-full"
+                            onError={(e) => { (e.target as HTMLImageElement).src = '/file.svg'; }}
+                          />
+                          <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded font-bold shadow">Live</span>
                         </div>
-                        <button
-                          className="text-violet-600 font-semibold text-base flex items-center gap-1 hover:underline mt-auto cursor-pointer"
-                          tabIndex={-1}
-                          onClick={e => { e.stopPropagation(); if (!liveLoading) handleLiveCardClick(anime); }}
-                          disabled={liveLoading}
-                        >
-                          View Guide
-                        </button>
+                        <div className="p-5 flex-1 flex flex-col">
+                          <h3 className="font-bold text-xl text-gray-800 mb-1 truncate" title={jikanAnime.title}>{jikanAnime.title}</h3>
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="flex items-center gap-1 text-amber-500 font-bold text-lg"><FaStar className="inline-block" /> {jikanAnime.score || '--'}</span>
+                            <span className="flex items-center gap-1 text-gray-500 text-sm">{jikanAnime.episodes || '--'} eps</span>
+                            <span className="text-gray-500 text-sm">{jikanAnime.status || ''}</span>
+                          </div>
+                          <button
+                            className="text-violet-600 font-semibold text-base flex items-center gap-1 hover:underline mt-auto cursor-pointer"
+                            tabIndex={-1}
+                            onClick={e => { e.stopPropagation(); if (!liveLoading) handleLiveCardClick(jikanAnime); }}
+                            disabled={liveLoading}
+                          >
+                            View Guide
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             ) : (
@@ -309,16 +336,18 @@ export default function AnimeList({ searchQuery }: AnimeListProps) {
                 <button
                   className="absolute top-3 right-3 z-10 text-2xl text-gray-400 hover:text-violet-500 transition cursor-pointer"
                   onClick={e => { e.stopPropagation(); toggleBookmark(anime); }}
-                  aria-label={bookmarks.some((a) => a.id === anime.id) ? "Remove bookmark" : "Add bookmark"}
+                  aria-label={bookmarks.some((a) => (a as { id: number }).id === anime.id) ? "Remove bookmark" : "Add bookmark"}
                 >
-                  {bookmarks.some((a) => a.id === anime.id) ? <FaBookmark /> : <FaRegBookmark />}
+                  {bookmarks.some((a) => (a as { id: number }).id === anime.id) ? <FaBookmark /> : <FaRegBookmark />}
                 </button>
                 <div className="relative w-full aspect-[3/4] bg-gray-100">
-                  <img
+                  <Image
                     src={anime.image || '/file.svg'}
                     alt={anime.title}
+                    width={300}
+                    height={400}
                     className="object-cover rounded-t-2xl w-full h-full"
-                    onError={e => { (e.target as HTMLImageElement).src = '/file.svg'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/file.svg'; }}
                   />
                 </div>
                 <div className="p-5 flex-1 flex flex-col">

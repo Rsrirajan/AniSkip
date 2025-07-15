@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from 'next/image';
 
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
-  const [bookmarks, setBookmarks] = useState<any[]>([]);
+  const [bookmarks, setBookmarks] = useState<unknown[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,13 +36,16 @@ export default function ProfileDropdown() {
             <div className="text-gray-400 text-sm">No bookmarks yet.</div>
           ) : (
             <ul className="max-h-48 overflow-y-auto">
-              {bookmarks.map((anime) => (
-                <li key={anime.id} className="flex items-center gap-2 py-1">
-                  <img src={anime.image} alt={anime.title} className="w-8 h-10 object-cover rounded border border-gray-200" />
-                  <span className="text-gray-700 text-sm truncate" title={anime.title}>{anime.title}</span>
-                  <Link href="#" className="ml-auto text-violet-500 text-xs hover:underline">View</Link>
-                </li>
-              ))}
+              {bookmarks.map((anime) => {
+                const bookmark = anime as { id: number; title: string; image: string };
+                return (
+                  <li key={bookmark.id} className="flex items-center gap-2 py-1">
+                    <Image src={bookmark.image} alt={bookmark.title} width={32} height={40} className="w-8 h-10 object-cover rounded border border-gray-200" />
+                    <span className="text-gray-700 text-sm truncate" title={bookmark.title}>{bookmark.title}</span>
+                    <Link href="#" className="ml-auto text-violet-500 text-xs hover:underline">View</Link>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

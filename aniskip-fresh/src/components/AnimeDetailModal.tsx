@@ -23,13 +23,13 @@ interface AnimeDetailModalProps {
 }
 
 // Helper to group consecutive episodes by type
-function groupEpisodes(episodes) {
+function groupEpisodes(episodes: Episode[]) {
   if (!episodes.length) return [];
   const groups = [];
   let start = 0;
   let currentType = getEpType(episodes[0]);
   for (let i = 1; i <= episodes.length; i++) {
-    const type = i < episodes.length ? getEpType(episodes[i]) : null;
+    const type = i < episodes.length ? getEpType(episodes[i]) : '';
     if (type !== currentType) {
       groups.push({
         type: currentType,
@@ -44,7 +44,7 @@ function groupEpisodes(episodes) {
   return groups;
 }
 
-function getEpType(ep) {
+function getEpType(ep: Episode) {
   if (ep.filler) return "Filler";
   if (ep.recap) return "Recap";
   // Add logic for "Mostly Filler" or "Mixed" if needed
@@ -60,18 +60,17 @@ const typeToTag = {
 };
 
 export default function AnimeDetailModal({ open, onClose, title, image, synopsis, episodes, type, score, status, aired }: AnimeDetailModalProps) {
+  const [openGroup, setOpenGroup] = useState<number | null>(null);
   if (!open) return null;
 
   // Breakdown counts
   const canonCount = episodes.filter(ep => !ep.filler && !ep.recap).length;
   const fillerCount = episodes.filter(ep => ep.filler).length;
-  const recapCount = episodes.filter(ep => ep.recap).length;
   const mixedCount = 0; // If you have mixed logic, update here
   const totalCount = episodes.length;
 
   // Watch Guide: group consecutive episodes by type
   const episodeGroups = groupEpisodes(episodes);
-  const [openGroup, setOpenGroup] = useState<number | null>(null);
 
   // Modal layout
   return (
@@ -140,7 +139,7 @@ export default function AnimeDetailModal({ open, onClose, title, image, synopsis
           <div className="text-gray-500 mb-4 text-sm bg-gray-50 rounded-xl px-6 py-3 border-l-4 border-violet-400">Follow this guide to watch only the essential episodes:</div>
           <div className="flex flex-col gap-4">
             {episodeGroups.map((group, idx) => {
-              const tag = typeToTag[group.type] || { label: group.type, color: "gray" };
+              const tag = (typeToTag as Record<string, { label: string; color: string }>)[group.type] || { label: group.type, color: "gray" };
               const isWatch = group.type === "Canon";
               const isOpen = openGroup === idx;
               return (

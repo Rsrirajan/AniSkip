@@ -60,7 +60,7 @@ export function useWatchlist() {
         // Update local state
         const newMap = {
           ...trackedMap,
-          [animeId.toString()]: { status, episode }
+          [animeId.toString()]: { status, episode, site: trackedMap[animeId.toString()]?.site || 'anilist' }
         };
         console.log('useWatchlist: Updating local state with:', newMap);
         setTrackedMap(newMap);

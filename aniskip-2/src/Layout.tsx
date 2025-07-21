@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
   Play,
@@ -11,6 +11,7 @@ import {
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { useEnsureProfile } from "@/lib/useEnsureProfile";
+import { supabase } from "@/lib/supabaseClient";
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
@@ -24,6 +25,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEnsureProfile();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Session timeout on tab inactivity (2 hours)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        // Start timer when tab is hidden
+        timeoutRef.current = setTimeout(async () => {
+          await supabase.auth.signOut();
+          window.location.reload();
+        }, 2 * 60 * 60 * 1000); // 2 hours
+      } else {
+        // Clear timer if tab becomes visible again
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">

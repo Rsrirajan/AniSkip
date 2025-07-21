@@ -1,6 +1,6 @@
 // Anilist API service
-const ANILIST_API = window.location.hostname === 'localhost'
-  ? "/api/anilist" 
+const ANILIST_API = import.meta.env.DEV
+  ? "/api/anilist"
   : "https://graphql.anilist.co";
 
 // Rate limiting helper

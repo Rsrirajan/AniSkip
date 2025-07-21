@@ -325,7 +325,6 @@ const Landing: React.FC = () => {
                   <AnimeCard 
                     anime={anime} 
                     onClick={openAnimeModal}
-                    showSignInButton={!user}
                     isInWatchlist={!!trackedMap[anime.id]}
                     onAddToWatchlist={user ? handleAddToWatchlist : undefined}
                     currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
@@ -380,7 +379,6 @@ const Landing: React.FC = () => {
                   <AnimeCard 
                     anime={anime} 
                     onClick={openAnimeModal}
-                    showSignInButton={!user}
                     isInWatchlist={!!trackedMap[anime.id]}
                     onAddToWatchlist={user ? handleAddToWatchlist : undefined}
                     currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}

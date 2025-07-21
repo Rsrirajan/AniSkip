@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import { useEnsureProfile } from "@/lib/useEnsureProfile";
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
@@ -20,6 +21,7 @@ const navigationItems = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  useEnsureProfile();
   const location = useLocation();
   const navigate = useNavigate();
 

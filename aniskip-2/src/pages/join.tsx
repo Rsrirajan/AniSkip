@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Mail, Lock } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate, Link } from "react-router-dom";
+import { ensureUserProfile } from '../lib/ensureUserProfile';
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,23 +45,7 @@ const JoinPage: React.FC = () => {
       if (event === 'SIGNED_IN' && session?.user) {
         setLoading(true);
         setUser(session.user);
-        // Check if profile exists
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        if (!data) {
-          // Create profile row
-          await supabase.from('profiles').insert([
-            {
-              id: session.user.id,
-              display_name: session.user.user_metadata?.full_name || session.user.email,
-              avatar_url: session.user.user_metadata?.avatar_url || null,
-              plan: 'free',
-            }
-          ]);
-        }
+        await ensureUserProfile(session.user);
         setLoading(false);
         navigate('/dashboard');
       } else if (event === 'SIGNED_OUT') {

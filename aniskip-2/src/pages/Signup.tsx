@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate, Link } from "react-router-dom";
+import { ensureUserProfile } from '../lib/ensureUserProfile';
+import { useEffect } from 'react';
 
 const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -69,6 +71,15 @@ const Signup: React.FC = () => {
       setError("An unexpected error occurred");
     }
   };
+
+  // After component mounts, check if user is logged in and ensure profile exists
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data?.user) {
+        await ensureUserProfile(data.user);
+      }
+    });
+  }, []);
 
   if (success) {
     return (

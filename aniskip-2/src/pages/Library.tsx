@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getAnimeDetails, Anime } from "../services/anilist";
+import { getAnimeById as getMalAnimeById } from "../services/jikan";
 import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";
 import { useUserPlan } from "../lib/useUserPlan";
@@ -14,27 +15,81 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const ids = Object.keys(trackedMap).map(Number);
-    if (ids.length === 0) {
+    const entries = Object.entries(trackedMap);
+    if (entries.length === 0) {
       setTrackedAnime([]);
       setLoading(false);
       return;
     }
     setLoading(true);
-    Promise.all(ids.map(id =>
-      getAnimeDetails(id)
-        .then(res => {
+    Promise.all(entries.map(async ([idStr, tracked]) => {
+      const id = Number(idStr);
+      if (tracked.site === 'anilist') {
+        // AniList fetch
+        try {
+          const res = await getAnimeDetails(id);
           if (!res || typeof res.Media === 'undefined' || res.Media === null) {
             console.error('AniList returned null or undefined for anime ID:', id, JSON.stringify(res, null, 2));
             return null;
           }
           return res.Media;
-        })
-        .catch(err => {
-          console.error('Error fetching anime details for ID:', id, err);
+        } catch (err) {
+          console.error('Error fetching AniList anime details for ID:', id, err);
           return null;
-        })
-    ))
+        }
+      } else if (tracked.site === 'mal' || tracked.site === 'myanimelist') {
+        // MAL fetch
+        try {
+          const res = await getMalAnimeById(id);
+          if (!res || !res.data) {
+            console.error('Jikan returned null or undefined for MAL ID:', id, JSON.stringify(res, null, 2));
+            return null;
+          }
+          const mal = res.data;
+          // Convert JikanAnime to Anime type
+          const anime: Anime = {
+            id: mal.mal_id,
+            title: {
+              romaji: mal.title,
+              english: mal.title_english || mal.title,
+              native: mal.title_japanese || mal.title,
+            },
+            coverImage: {
+              large: mal.images?.jpg?.large_image_url || mal.images?.jpg?.image_url || '',
+              medium: mal.images?.jpg?.small_image_url || mal.images?.jpg?.image_url || '',
+            },
+            bannerImage: mal.images?.jpg?.image_url || '',
+            description: mal.synopsis || '',
+            averageScore: mal.score ? Math.round(mal.score * 10) : 0,
+            episodes: mal.episodes || 0,
+            status: mal.status?.toUpperCase() || 'UNKNOWN',
+            genres: mal.genres?.map(g => g.name) || [],
+            season: mal.season?.toUpperCase() || '',
+            seasonYear: mal.year || 0,
+            format: mal.type || '',
+            duration: mal.duration ? parseInt(mal.duration) || 24 : 24,
+            studios: { nodes: mal.studios?.map(s => ({ name: s.name })) || [] },
+          };
+          return anime;
+        } catch (err) {
+          console.error('Error fetching MAL anime details for ID:', id, err);
+          return null;
+        }
+      } else {
+        // Unknown site, fallback to AniList
+        try {
+          const res = await getAnimeDetails(id);
+          if (!res || typeof res.Media === 'undefined' || res.Media === null) {
+            console.error('AniList returned null or undefined for anime ID:', id, JSON.stringify(res, null, 2));
+            return null;
+          }
+          return res.Media;
+        } catch (err) {
+          console.error('Error fetching AniList anime details for ID:', id, err);
+          return null;
+        }
+      }
+    }))
       .then(animeArr => {
         setTrackedAnime(animeArr.filter(Boolean) as Anime[]);
         setLoading(false);

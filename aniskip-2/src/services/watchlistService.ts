@@ -12,7 +12,7 @@ export interface WatchlistItem {
 }
 
 // Get all tracked anime for a user
-export async function getTrackedAnimeMap(userId: string): Promise<Record<string, { status: string; episode: number }>> {
+export async function getTrackedAnimeMap(userId: string): Promise<Record<string, { status: string; episode: number; site: string }>> {
   console.log('getTrackedAnimeMap called with userId:', userId);
   if (!userId) {
     console.log('No userId provided, returning empty map');
@@ -23,7 +23,7 @@ export async function getTrackedAnimeMap(userId: string): Promise<Record<string,
     console.log('Fetching watchlist from Supabase...');
     const { data, error } = await supabase
       .from('watchlist')
-      .select('anime_id, status, current_episode')
+      .select('anime_id, status, current_episode, site')
       .eq('user_id', userId);
     
     if (error) {
@@ -32,11 +32,12 @@ export async function getTrackedAnimeMap(userId: string): Promise<Record<string,
     }
     
     console.log('Watchlist data received:', data);
-    const map: Record<string, { status: string; episode: number }> = {};
+    const map: Record<string, { status: string; episode: number; site: string }> = {};
     data?.forEach(item => {
       map[item.anime_id.toString()] = {
         status: item.status,
-        episode: item.current_episode
+        episode: item.current_episode,
+        site: item.site || 'anilist',
       };
     });
     

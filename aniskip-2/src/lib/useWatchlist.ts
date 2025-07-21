@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 import { getTrackedAnimeMap, setTrackedAnime, removeTrackedAnime } from '../services/watchlistService';
 
 export function useWatchlist() {
-  const [trackedMap, setTrackedMap] = useState<Record<string, { status: string; episode: number }>>({});
+  const [trackedMap, setTrackedMap] = useState<Record<string, { status: string; episode: number; site: string }>>({});
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 

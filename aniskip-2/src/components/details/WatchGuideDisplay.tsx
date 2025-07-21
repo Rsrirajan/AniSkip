@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Play, AlertTriangle, ThumbsUp, Users, Zap, Heart, BookOpen, Globe } from "lucide-react";
-import { generateWatchGuide, WatchGuide, EpisodeRecommendation } from "../../services/watchGuideService";
+import { Star, Clock, SkipForward, Play, AlertTriangle, Users, Zap, Heart, Globe } from "lucide-react";
+import { generateWatchGuide, WatchGuide } from "../../services/watchGuideService";
 
 interface WatchGuideDisplayProps {
   malId: number;

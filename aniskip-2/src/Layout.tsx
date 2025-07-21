@@ -5,14 +5,9 @@ import {
   BarChart3,
   Library,
   Settings,
-  Crown,
   Search,
-  Bell,
-  User,
   BookOpen
 } from "lucide-react"
-import { supabase } from "./lib/supabaseClient";
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 
@@ -27,14 +22,6 @@ const navigationItems = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [signingOut, setSigningOut] = React.useState(false);
-
-  const handleSignOut = async () => {
-    setSigningOut(true);
-    await supabase.auth.signOut();
-    setSigningOut(false);
-    navigate("/");
-  };
 
   return (
     <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">

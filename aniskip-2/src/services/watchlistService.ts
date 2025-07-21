@@ -58,8 +58,8 @@ export async function setTrackedAnime(userId: string, animeId: number, status: s
   
   try {
     // First check if user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    console.log('Auth check result:', { user: user?.id, authError });
+    const { data: { user } } = await supabase.auth.getUser();
+    console.log('Auth check result:', { user: user?.id });
     
     if (!user) {
       console.error('User not authenticated');
@@ -186,7 +186,7 @@ export async function testWatchlistConnection(userId: string): Promise<{ success
   
   try {
     // Test 1: Check if user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return { success: false, error: 'User not authenticated' };
     }

@@ -12,10 +12,8 @@ interface AddToListButtonProps {
 
 const AddToListButton: React.FC<AddToListButtonProps> = ({ anime, userId, initialStatus }) => {
   const [status, setStatus] = useState(initialStatus || 'Add to List');
-  const [loading, setLoading] = useState(false);
 
   const handleStatusChange = async (newStatus: string) => {
-    setLoading(true);
     const { error } = await supabase.from('user_anime_list').upsert({
       user_id: userId,
       anime_id: anime.id,
@@ -29,7 +27,6 @@ const AddToListButton: React.FC<AddToListButtonProps> = ({ anime, userId, initia
     } else {
       console.error('Error updating status:', error);
     }
-    setLoading(false);
   };
 
   const statuses = ["Watching", "Completed", "Paused", "Dropped", "Plan to Watch"];

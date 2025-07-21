@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Plus, Eye, X, Check, Lock, Bug } from "lucide-react";
+import { Star, Plus, X, Lock, Bug } from "lucide-react";
 import { Anime } from "../services/anilist";
-import { testWatchlistConnection, setTrackedAnime } from "../services/watchlistService";
+import { testWatchlistConnection } from "../services/watchlistService";
 import { useNavigate } from "react-router-dom";
 
 interface AnimeModalProps {
@@ -182,27 +182,6 @@ export default function AnimeModal({
 
   const getTitle = () => anime.title.english || anime.title.romaji || anime.title.native;
   const getScore = () => (anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "N/A");
-
-  const handleSave = async () => {
-    if (onTrackAnime && selectedStatus) {
-      setSaving(true);
-      try {
-        // Add to Supabase watchlist directly
-        if (userId && anime) {
-          await setTrackedAnime(userId, anime.id, selectedStatus, episode, 'anilist');
-        }
-        await onTrackAnime(anime, selectedStatus, episode);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-      } catch (error) {
-        console.error('Error saving to watchlist:', error);
-      } finally {
-        setSaving(false);
-      }
-    } else {
-      console.error('Cannot save: missing onTrackAnime or selectedStatus');
-    }
-  };
 
   const handleTestConnection = async () => {
     if (!userId) {

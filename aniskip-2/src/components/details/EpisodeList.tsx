@@ -13,7 +13,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
 
   useEffect(() => {
     const fetchProgress = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('user_anime_progress')
         .select('watched_episodes')
         .eq('user_id', userId)

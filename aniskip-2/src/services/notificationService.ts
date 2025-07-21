@@ -116,14 +116,14 @@ export async function fetchUserNotifications(userId: string): Promise<AnimeNotif
 }
 
 // Mark notification as read
-export async function markNotificationAsRead(userId: string, notificationId: string): Promise<boolean> {
+export async function markNotificationAsRead(): Promise<boolean> {
   // In a real app, you'd store this in a notifications table
   // For now, we'll just return success
   return true;
 }
 
 // Mark all notifications as read
-export async function markAllNotificationsAsRead(userId: string): Promise<boolean> {
+export async function markAllNotificationsAsRead(): Promise<boolean> {
   // In a real app, you'd update all notifications for this user
   // For now, we'll just return success
   return true;

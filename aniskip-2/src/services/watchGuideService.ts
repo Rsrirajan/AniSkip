@@ -1,4 +1,4 @@
-import { getAllAnimeEpisodes, getAnimeById, JikanEpisode, JikanAnime } from './jikan';
+import { getAllAnimeEpisodes, getAnimeById } from './jikan';
 
 export interface EpisodeRecommendation {
   episode: number;
@@ -291,7 +291,7 @@ export const generateWatchGuide = async (malId: number): Promise<WatchGuide> => 
 
     // Generate recommendations for each episode
     const recommendations = episodes.map(episode => 
-      getEpisodeRecommendation(episode, animeTitle, episode.mal_id || episode.episode_id || 0)
+      getEpisodeRecommendation(episode, animeTitle, episode.mal_id || 0)
     );
 
     // Calculate stats
@@ -326,154 +326,6 @@ export const generateWatchGuide = async (malId: number): Promise<WatchGuide> => 
   } catch (error) {
     console.error('Error generating watch guide:', error);
     throw new Error('Failed to generate watch guide');
-  }
-};
-
-// Analyze episodes and generate recommendations
-const analyzeEpisodes = (episodes: JikanEpisode[]): EpisodeRecommendation[] => {
-  const recommendations: EpisodeRecommendation[] = [];
-  let currentGroup: { type: 'watch' | 'skip' | 'optional'; episodes: number[]; reason: string } | null = null;
-
-  episodes.forEach((episode, index) => {
-    const episodeNumber = index + 1;
-    let type: 'watch' | 'skip' | 'optional' = 'watch';
-    let reason = '';
-
-    // Determine episode type based on filler/recap status
-    if (episode.filler) {
-      type = 'skip';
-      reason = 'Filler episode';
-    } else if (episode.recap) {
-      type = 'skip';
-      reason = 'Recap episode';
-    } else {
-      type = 'watch';
-      reason = 'Canon episode';
-    }
-
-    // Check for special cases (first few episodes, final episodes, etc.)
-    if (episodeNumber <= 3) {
-      type = 'watch';
-      reason = 'Essential setup episodes';
-    } else if (episodeNumber >= episodes.length - 2) {
-      type = 'watch';
-      reason = 'Final episodes';
-    }
-
-    // Group consecutive episodes of the same type
-    if (!currentGroup || currentGroup.type !== type) {
-      if (currentGroup) {
-        recommendations.push({
-          type: currentGroup.type,
-          episodes: formatEpisodeRange(currentGroup.episodes),
-          reason: currentGroup.reason,
-          episodeList: currentGroup.episodes
-        });
-      }
-      currentGroup = { type, episodes: [episodeNumber], reason };
-    } else {
-      if (currentGroup) {
-        currentGroup.episodes.push(episodeNumber);
-      }
-    }
-  });
-
-  // Add the last group
-  if (currentGroup) {
-    recommendations.push({
-      type: currentGroup.type,
-      episodes: formatEpisodeRange(currentGroup.episodes),
-      reason: currentGroup.reason,
-      episodeList: currentGroup.episodes
-    });
-  }
-
-  return recommendations;
-};
-
-// Format episode range for display
-const formatEpisodeRange = (episodes: number[]): string => {
-  if (episodes.length === 1) {
-    return episodes[0].toString();
-  }
-  
-  const first = episodes[0];
-  const last = episodes[episodes.length - 1];
-  
-  // Check if episodes are consecutive
-  const isConsecutive = episodes.every((ep, index) => ep === first + index);
-  
-  if (isConsecutive) {
-    return `${first}-${last}`;
-  } else {
-    return episodes.join(', ');
-  }
-};
-
-// Calculate statistics
-const calculateStats = (episodes: JikanEpisode[], recommendations: EpisodeRecommendation[]) => {
-  const totalEpisodes = episodes.length;
-  const fillerEpisodes = episodes.filter(ep => ep.filler).length;
-  const recapEpisodes = episodes.filter(ep => ep.recap).length;
-  const canonEpisodes = totalEpisodes - fillerEpisodes - recapEpisodes;
-  
-  let watchEpisodes = 0;
-  let skipEpisodes = 0;
-  let optionalEpisodes = 0;
-  let timeSaved = 0;
-  let watchTime = 0;
-
-  recommendations.forEach(rec => {
-    if (rec.episodeList) {
-      switch (rec.type) {
-        case 'watch':
-          watchEpisodes += rec.episodeList.length;
-          watchTime += rec.episodeList.length * 24; // Assuming 24 minutes per episode for simplicity
-          break;
-        case 'skip':
-          skipEpisodes += rec.episodeList.length;
-          timeSaved += rec.episodeList.length * 24;
-          break;
-        case 'optional':
-          optionalEpisodes += rec.episodeList.length;
-          watchTime += rec.episodeList.length * 24; // Optional episodes are watched
-          break;
-      }
-    }
-  });
-
-  return {
-    totalEpisodes,
-    fillerEpisodes,
-    recapEpisodes,
-    canonEpisodes,
-    watchEpisodes,
-    skipEpisodes,
-    optionalEpisodes,
-    timeSaved,
-    watchTime
-  };
-};
-
-// Generate description based on anime and stats
-const generateDescription = (anime: JikanAnime, stats: any): string => {
-  const fillerPercentage = Math.round((stats.fillerEpisodes / stats.totalEpisodes) * 100);
-  const timeSaved = formatTime(stats.timeSaved);
-  
-  return `A comprehensive watch guide for ${anime.title} that helps you navigate through ${stats.totalEpisodes} episodes efficiently. This guide identifies ${stats.fillerEpisodes} filler episodes (${fillerPercentage}%) and ${stats.recapEpisodes} recap episodes, potentially saving you ${timeSaved} of viewing time while ensuring you don't miss any important story content.`;
-};
-
-// Format time in hours and minutes
-const formatTime = (minutes: number): string => {
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  
-  if (hours === 0) {
-    return `${remainingMinutes} minutes`;
-  } else if (remainingMinutes === 0) {
-    return `${hours} hours`;
-  } else {
-    return `${hours} hours ${remainingMinutes} minutes`;
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getAnimeDetails, Anime } from "../services/anilist";
 import AnimeCard from "../components/AnimeCard";
@@ -54,16 +54,6 @@ export default function Library() {
     await removeAnime(anime.id);
   };
 
-  const handleUpdateStatus = async (anime: Anime, status: string, episode: number) => {
-    await updateTrackedAnime(anime.id, status, episode);
-  };
-
-  const handleQuickView = (anime: Anime) => {
-    // Open a quick view modal with essential information
-    setSelectedAnime(anime);
-    // The existing modal will handle the display
-  };
-
   if (planLoading || watchlistLoading) return null;
 
   const NSFW_GENRES = ["Ecchi", "Hentai", "Erotica", "Adult", "Yaoi", "Yuri"];
@@ -113,7 +103,6 @@ export default function Library() {
                 onRemoveFromWatchlist={handleRemoveFromWatchlist}
                 currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                 currentEpisode={trackedMap[anime.id]?.episode || 1}
-                onUpdateStatus={handleUpdateStatus}
               />
             ))}
           </motion.div>

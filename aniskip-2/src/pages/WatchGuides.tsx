@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Play, Crown, Lock, Search, Loader2 } from "lucide-react";
+import { Star, Clock, SkipForward, Crown, Lock, Search, Loader2 } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchGuide } from "../lib/useWatchGuide";
 import { WatchGuide } from "../services/watchGuideService";
@@ -131,22 +131,14 @@ const WatchGuides: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {guides.map((guide, index) => (
               <motion.div
-                key={guide.id}
+                key={guide.malId}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className="glass-effect border-slate-700 rounded-lg overflow-hidden"
               >
                 <div className="relative">
-                  <img 
-                    src={guide.image} 
-                    alt={guide.anime}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://via.placeholder.com/400x300/374151/9CA3AF?text=No+Image';
-                    }}
-                  />
+                  
                   {guide.proOnly && (
                     <div className="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                       <Crown className="w-4 h-4" />
@@ -162,22 +154,22 @@ const WatchGuides: React.FC = () => {
                   <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {guide.timeToWatch}
+                      {guide.stats.watchTime}
                     </div>
                     <div className="flex items-center gap-1">
                       <SkipForward className="w-4 h-4" />
-                      Save {guide.timeSaved}
+                      Save {guide.stats.timeSaved}
                     </div>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4" />
-                      {guide.difficulty}
+                      {guide.stats.canonEpisodes}
                     </div>
                   </div>
 
                   {/* Stats Overview */}
                   <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
                     <div className="bg-slate-800/50 rounded p-2 text-center">
-                      <div className="text-white font-semibold">{guide.stats.totalEpisodes}</div>
+                      <div className="text-white font-semibold">{guide.totalEpisodes}</div>
                       <div className="text-slate-400">Total</div>
                     </div>
                     <div className="bg-red-900/20 border border-red-700/30 rounded p-2 text-center">
@@ -185,7 +177,7 @@ const WatchGuides: React.FC = () => {
                       <div className="text-slate-400">Filler</div>
                     </div>
                     <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
-                      <div className="text-green-400 font-semibold">{guide.stats.watchEpisodes}</div>
+                      <div className="text-green-400 font-semibold">{guide.stats.canonEpisodes}</div>
                       <div className="text-slate-400">Watch</div>
                     </div>
                   </div>
@@ -254,34 +246,34 @@ const WatchGuides: React.FC = () => {
                 </div>
                 <div className="bg-slate-800/50 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Time to Watch</h3>
-                  <p className="text-slate-300">{selectedGuide.timeToWatch}</p>
+                  <p className="text-slate-300">{selectedGuide.stats.watchTime}</p>
                 </div>
                 <div className="bg-slate-800/50 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Time Saved</h3>
-                  <p className="text-slate-300">{selectedGuide.timeSaved}</p>
+                  <p className="text-slate-300">{selectedGuide.stats.timeSaved}</p>
                 </div>
                 <div className="bg-slate-800/50 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Difficulty</h3>
-                  <p className="text-slate-300">{selectedGuide.difficulty}</p>
+                  <p className="text-slate-300">{selectedGuide.stats.canonEpisodes}</p>
                 </div>
               </div>
 
               {/* Detailed Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-4">
-                  <div className="text-green-400 font-bold text-2xl">{selectedGuide.stats.watchEpisodes}</div>
+                  <div className="text-green-400 font-bold text-2xl">{selectedGuide.stats.canonEpisodes}</div>
                   <div className="text-slate-300 text-sm">Watch</div>
                 </div>
                 <div className="bg-red-900/20 border border-red-700/30 rounded-lg p-4">
-                  <div className="text-red-400 font-bold text-2xl">{selectedGuide.stats.skipEpisodes}</div>
+                  <div className="text-red-400 font-bold text-2xl">{selectedGuide.stats.fillerEpisodes}</div>
                   <div className="text-slate-300 text-sm">Skip</div>
                 </div>
                 <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold text-2xl">{selectedGuide.stats.optionalEpisodes}</div>
+                  <div className="text-yellow-400 font-bold text-2xl">{selectedGuide.stats.recapEpisodes}</div>
                   <div className="text-slate-300 text-sm">Optional</div>
                 </div>
                 <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-4">
-                  <div className="text-blue-400 font-bold text-2xl">{selectedGuide.stats.fillerEpisodes}</div>
+                  <div className="text-blue-400 font-bold text-2xl">{selectedGuide.stats.mixedEpisodes}</div>
                   <div className="text-slate-300 text-sm">Filler</div>
                 </div>
               </div>
@@ -293,38 +285,35 @@ const WatchGuides: React.FC = () => {
                     <div
                       key={index}
                       className={`p-4 rounded-lg border ${
-                        rec.type === 'watch' 
+                        rec.recommendation === 'watch' 
                           ? 'bg-green-900/20 border-green-700/50' 
-                          : rec.type === 'skip'
+                          : rec.recommendation === 'skip'
                           ? 'bg-red-900/20 border-red-700/50'
                           : 'bg-yellow-900/20 border-yellow-700/50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-4 h-4 rounded-full mt-1 ${
-                          rec.type === 'watch' 
+                          rec.recommendation === 'watch' 
                             ? 'bg-green-500' 
-                            : rec.type === 'skip'
+                            : rec.recommendation === 'skip'
                             ? 'bg-red-500'
                             : 'bg-yellow-500'
                         }`} />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className={`font-semibold ${
-                              rec.type === 'watch' 
+                              rec.recommendation === 'watch' 
                                 ? 'text-green-400' 
-                                : rec.type === 'skip'
+                                : rec.recommendation === 'skip'
                                 ? 'text-red-400'
                                 : 'text-yellow-400'
                             }`}>
-                              {rec.type === 'watch' ? 'WATCH' : rec.type === 'skip' ? 'SKIP' : 'OPTIONAL'}
+                              {rec.recommendation === 'watch' ? 'WATCH' : rec.recommendation === 'skip' ? 'SKIP' : 'OPTIONAL'}
                             </span>
-                            <span className="text-white font-medium">Episodes {rec.episodes}</span>
+                            <span className="text-white font-medium">Episodes {rec.episode}</span>
                           </div>
                           <p className="text-slate-300 font-medium mb-1">{rec.reason}</p>
-                          {rec.details && (
-                            <p className="text-slate-400 text-sm">{rec.details}</p>
-                          )}
                         </div>
                       </div>
                     </div>

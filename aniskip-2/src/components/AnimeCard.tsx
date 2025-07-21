@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, Plus, Eye, Minus } from "lucide-react";
+import { Star, Plus, Minus } from "lucide-react";
 import { Anime } from "../services/anilist";
 
 interface AnimeCardProps {
@@ -14,16 +14,7 @@ interface AnimeCardProps {
   onRemoveFromWatchlist?: (anime: Anime) => void;
   currentStatus?: string;
   currentEpisode?: number;
-  onUpdateStatus?: (anime: Anime, status: string, episode: number) => void;
 }
-
-const WATCH_STATUSES = [
-  { value: "Plan to Watch", label: "Plan to Watch", color: "bg-blue-500" },
-  { value: "Watching", label: "Watching", color: "bg-green-500" },
-  { value: "Completed", label: "Completed", color: "bg-purple-500" },
-  { value: "On Hold", label: "On Hold", color: "bg-yellow-500" },
-  { value: "Dropped", label: "Dropped", color: "bg-red-500" }
-];
 
 export default function AnimeCard({ 
   anime, 
@@ -36,17 +27,11 @@ export default function AnimeCard({
   onRemoveFromWatchlist,
   currentStatus = "Plan to Watch",
   currentEpisode = 1,
-  onUpdateStatus
 }: AnimeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(currentStatus);
-  const [episodeInput, setEpisodeInput] = useState(currentEpisode.toString());
-  const [saveAnimating, setSaveAnimating] = useState(false);
 
   useEffect(() => {
-    setSelectedStatus(currentStatus);
-    setEpisodeInput(currentEpisode.toString());
   }, [currentStatus, currentEpisode]);
 
   const getTitle = () => anime.title.english || anime.title.romaji || anime.title.native;
@@ -68,27 +53,6 @@ export default function AnimeCard({
       onAddToWatchlist(anime);
     }
     setTimeout(() => setIsAnimating(false), 600);
-  };
-
-  const handleStatusClick = (status: string) => {
-    setSelectedStatus(status);
-  };
-
-  const handleEpisodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      setEpisodeInput(value);
-    }
-  };
-
-  const handleSave = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onUpdateStatus) {
-      const episode = parseInt(episodeInput) || 1;
-      setSaveAnimating(true);
-      onUpdateStatus(anime, selectedStatus, episode);
-      setTimeout(() => setSaveAnimating(false), 600);
-    }
   };
 
   return (

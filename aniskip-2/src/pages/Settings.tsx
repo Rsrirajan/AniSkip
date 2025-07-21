@@ -3,7 +3,6 @@ import { supabase } from "../lib/supabaseClient";
 import { motion } from "framer-motion";
 import { Settings as SettingsIcon } from "lucide-react";
 import { Crown, Lock } from "lucide-react";
-import { useUserPlan } from "../lib/useUserPlan";
 import { useNavigate } from "react-router-dom";
 
 const themes = ["Auto", "Light", "Dark"];
@@ -11,7 +10,7 @@ const timeZones = ["UTC", "Central Time", "Eastern Time", "Pacific Time"];
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
+  const [, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,8 +30,6 @@ const Settings: React.FC = () => {
   const [showNsfw, setShowNsfw] = useState(false);
   // Add new state for new episode notifications
   const [newEpisodeNotifications, setNewEpisodeNotifications] = useState(false);
-
-  const { plan: userPlan, loading: planLoading } = useUserPlan();
 
   useEffect(() => {
     const fetchProfile = async () => {

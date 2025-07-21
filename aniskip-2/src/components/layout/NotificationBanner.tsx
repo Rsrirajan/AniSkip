@@ -40,7 +40,7 @@ const NotificationBanner: React.FC = () => {
     );
     setUnreadCount(prev => Math.max(0, prev - 1));
     
-    await markNotificationAsRead(userId, id);
+    await markNotificationAsRead();
   };
 
   const handleMarkAllAsRead = async () => {
@@ -49,7 +49,7 @@ const NotificationBanner: React.FC = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     setUnreadCount(0);
     
-    await markAllNotificationsAsRead(userId);
+    await markAllNotificationsAsRead();
   };
 
   const getNotificationIcon = (type: string) => {

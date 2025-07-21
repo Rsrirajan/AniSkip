@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, X, CreditCard, Lock } from "lucide-react";
+import { Check, X, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const features = [

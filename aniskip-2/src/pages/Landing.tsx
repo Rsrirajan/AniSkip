@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Star, ChevronLeft, ChevronRight, TrendingUp, Calendar, Trophy, Database } from "lucide-react";
+import { Play, ChevronLeft, ChevronRight, TrendingUp, Calendar, Database } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Anime, getTrendingAnime, getSeasonalAnime, getPopularAnime, getCurrentSeason, getAnimeCount, clearApiCache } from "../services/anilist";
+import { Anime, getTrendingAnime, getSeasonalAnime, getPopularAnime, getCurrentSeason, clearApiCache } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
 import { useWatchlist } from "../lib/useWatchlist";
 import { useUserPlan } from "../lib/useUserPlan";
@@ -24,12 +24,10 @@ const Landing: React.FC = () => {
   const [trendingAnime, setTrendingAnime] = useState<Anime[]>([]);
   const [seasonalAnime, setSeasonalAnime] = useState<Anime[]>([]);
   const [loading, setLoading] = useState(true);
-  const { trackedMap, userId, loading: watchlistLoading, updateTrackedAnime } = useWatchlist();
+  const { trackedMap, userId, updateTrackedAnime } = useWatchlist();
   const [user, setUser] = useState<any>(null);
   const { plan, loading: planLoading } = useUserPlan();
   const [animeCount, setAnimeCount] = useState<number>(0);
-  const [error, setError] = useState<string | null>(null);
-  const [rateLimited, setRateLimited] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -64,8 +62,6 @@ const Landing: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    setError(null);
-    setRateLimited(false);
     const { season, year } = getCurrentSeason();
     
     // Reduce API calls by getting more data in fewer requests
@@ -77,16 +73,6 @@ const Landing: React.FC = () => {
     ]).then((results) => {
       const [popularResult, trendingResult, seasonalResult] = results;
       
-      // Check if any requests were rate limited
-      const hasRateLimit = results.some(result => 
-        result.status === 'rejected' && 
-        result.reason?.message?.includes('429')
-      );
-      
-      if (hasRateLimit) {
-        setRateLimited(true);
-      }
-      
       // Handle popular anime (use first 3 for featured, rest for backup)
       if (popularResult.status === 'fulfilled') {
         const popularData = popularResult.value.data.Page.media;
@@ -97,7 +83,7 @@ const Landing: React.FC = () => {
         }
       } else {
         console.error('Failed to load popular anime:', popularResult.reason);
-        setError('Failed to load some content. Please refresh the page.');
+        // Replace setError('Failed to load some content. Please refresh the page.'); with console.error
       }
       
       // Handle trending anime
@@ -160,10 +146,6 @@ const Landing: React.FC = () => {
     handleTrackAnime(anime, "Plan to Watch", 1);
     setShowAnimeModal(false);
     setSelectedAnime(null);
-  };
-
-  const handleUpdateStatus = async (anime: Anime, status: string, episode: number) => {
-    await updateTrackedAnime(anime.id, status, episode);
   };
 
   if (planLoading) return null;
@@ -344,7 +326,6 @@ const Landing: React.FC = () => {
                     onAddToWatchlist={user ? handleAddToWatchlist : undefined}
                     currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                     currentEpisode={trackedMap[anime.id]?.episode || 1}
-                    onUpdateStatus={user ? handleUpdateStatus : undefined}
                   />
                 </motion.div>
               ))
@@ -400,7 +381,6 @@ const Landing: React.FC = () => {
                     onAddToWatchlist={user ? handleAddToWatchlist : undefined}
                     currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                     currentEpisode={trackedMap[anime.id]?.episode || 1}
-                    onUpdateStatus={user ? handleUpdateStatus : undefined}
                   />
                 </motion.div>
               ))

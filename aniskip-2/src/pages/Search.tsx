@@ -7,7 +7,8 @@ import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchlist } from "../lib/useWatchlist";
 
 const STATUS_FILTERS = ["All", "Airing", "Completed"];
-const NSFW_GENRES = ["Ecchi", "Hentai", "Erotica", "Adult", "Yaoi", "Yuri"];
+const NSFW_GENRES = ["Hentai"];
+const strictNsfw = false; // Set to true for strict Ecchi filtering
 
 export default function Search() {
   const [query, setQuery] = useState("");
@@ -72,16 +73,6 @@ export default function Search() {
     await removeAnime(anime.id);
   };
 
-  const handleUpdateStatus = async (anime: Anime, status: string, episode: number) => {
-    await updateTrackedAnime(anime.id, status, episode);
-  };
-
-  const handleQuickView = (anime: Anime) => {
-    // Open a quick view modal with essential information
-    setSelectedAnime(anime);
-    // The existing modal will handle the display
-  };
-
   // Filter animeList by status, genre, and NSFW
   const filteredAnime = useMemo(() => {
     return animeList.filter(anime => {
@@ -96,19 +87,22 @@ export default function Search() {
         genreOk = anime.genres?.includes(genreFilter);
       }
       // NSFW filter (only for logged-in users)
-      if (showNsfw === false && anime.genres?.some(g => NSFW_GENRES.includes(g))) {
-        nsfwOk = false;
+      if (showNsfw === false) {
+        const hasNsfwGenre = anime.genres?.some(g => NSFW_GENRES.includes(g));
+        const hasStrictNsfw = strictNsfw && anime.genres?.includes("Ecchi");
+        nsfwOk = !hasNsfwGenre && !hasStrictNsfw;
       }
       return statusOk && genreOk && nsfwOk;
     });
   }, [animeList, statusFilter, genreFilter, showNsfw]);
 
-  // NSFW filter for trending anime
+  // Improved NSFW filter
   const filteredTrendingAnime = useMemo(() => {
-    if (showNsfw === false) {
-      return trendingAnime.filter(anime => !anime.genres?.some(g => NSFW_GENRES.includes(g)));
-    }
-    return trendingAnime;
+    return trendingAnime.filter(anime => {
+      const hasNsfwGenre = anime.genres?.some(g => NSFW_GENRES.includes(g));
+      const hasStrictNsfw = strictNsfw && anime.genres?.includes("Ecchi");
+      return !hasNsfwGenre && !hasStrictNsfw;
+    });
   }, [trendingAnime, showNsfw]);
 
   const GENRE_LINKS = [
@@ -198,7 +192,6 @@ export default function Search() {
                       onRemoveFromWatchlist={userId ? handleRemoveFromWatchlist : undefined}
                       currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                       currentEpisode={trackedMap[anime.id]?.episode || 1}
-                      onUpdateStatus={userId ? handleUpdateStatus : undefined}
                     />
                   ))}
                 </div>
@@ -264,7 +257,6 @@ export default function Search() {
                     onRemoveFromWatchlist={userId ? handleRemoveFromWatchlist : undefined}
                     currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                     currentEpisode={trackedMap[anime.id]?.episode || 1}
-                    onUpdateStatus={userId ? handleUpdateStatus : undefined}
                   />
                 ))}
               </motion.div>

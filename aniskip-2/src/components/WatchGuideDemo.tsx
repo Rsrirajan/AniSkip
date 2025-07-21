@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Play, Lock, TrendingUp, Users, Zap, Heart, BookOpen, Globe, AlertTriangle } from "lucide-react";
+import { Star, Clock, SkipForward, Play, Users, Heart, Globe, AlertTriangle } from "lucide-react";
 
 interface EpisodeRecommendation {
   episode: number;
@@ -242,7 +242,7 @@ const WatchGuideDemo: React.FC<WatchGuideDemoProps> = ({ onClose }) => {
             },
           }}
         >
-          {DEMO_WATCH_GUIDES.map((guide, index) => (
+          {DEMO_WATCH_GUIDES.map((guide) => (
             <motion.div
               key={guide.malId}
               variants={{

@@ -80,7 +80,7 @@ const makeApiCall = async (query: string, variables: any, retries = 2): Promise<
       if (attempt === retries) {
         // If all retries failed, return mock data for better UX
         console.log('Returning mock data due to API failure');
-        return getMockData(query);
+        return getMockData();
       }
       
       // Wait before retrying (exponential backoff)
@@ -90,7 +90,7 @@ const makeApiCall = async (query: string, variables: any, retries = 2): Promise<
 };
 
 // Mock data fallback for when API is unavailable
-const getMockData = (query: string): any => {
+const getMockData = (): any => {
   const mockAnime = {
     id: 1,
     title: {

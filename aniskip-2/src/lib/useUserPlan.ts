@@ -19,7 +19,7 @@ export function useUserPlan() {
         }
         return;
       }
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("profiles")
         .select("plan, show_nsfw")
         .eq("id", user.id)

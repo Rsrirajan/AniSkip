@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAnimeDetails, Anime } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
@@ -25,7 +25,7 @@ export default function AnimeDetails() {
   useEffect(() => {
     if (id) {
       getAnimeDetails(Number(id)).then(response => {
-        setAnime(response.data.Media);
+        setAnime(response.Media);
         setLoading(false);
       });
     }

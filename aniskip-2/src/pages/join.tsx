@@ -28,7 +28,7 @@ const Spinner = () => (
 const JoinPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [mode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

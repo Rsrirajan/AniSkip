@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Play, 
@@ -18,9 +18,6 @@ import { useWatchlist } from "../lib/useWatchlist";
 
 function getMonthlyGoal() {
   return Number(localStorage.getItem("monthlyGoal") || 15);
-}
-function setMonthlyGoal(goal: number) {
-  localStorage.setItem("monthlyGoal", goal.toString());
 }
 
 // Animated Counter Component
@@ -66,9 +63,8 @@ const AnimatedCounter = ({ value, suffix = "", duration = 2 }: { value: number, 
 }
 
 export default function Dashboard() {
-  const { trackedMap, userId, loading: watchlistLoading, updateTrackedAnime, removeAnime } = useWatchlist();
+  const { trackedMap, loading: watchlistLoading, updateTrackedAnime, removeAnime } = useWatchlist();
   const [continueWatching, setContinueWatching] = useState<Anime[]>([]);
-  const [animeDataMap, setAnimeDataMap] = useState<Record<string, Anime>>({});
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -134,7 +130,6 @@ export default function Dashboard() {
     const ids = Object.keys(trackedMap).map(Number);
     if (ids.length === 0) {
       setContinueWatching([]);
-      setAnimeDataMap({});
       setLoading(false);
       setTotalAnime(0);
       setTotalEpisodes(0);
@@ -189,17 +184,6 @@ export default function Dashboard() {
 
   const handleRemoveFromWatchlist = async (anime: Anime) => {
     await removeAnime(anime.id);
-  };
-
-  const handleUpdateStatus = async (anime: Anime, status: string, episode: number) => {
-    await updateTrackedAnime(anime.id, status, episode);
-  };
-
-  // Handler for goal change
-  const handleGoalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = Math.max(1, Number(e.target.value));
-    setMonthlyGoal(val);
-    setMonthlyGoalInput(val.toString());
   };
 
   // Progress calculation
@@ -305,7 +289,7 @@ export default function Dashboard() {
           className="grid lg:grid-cols-4 gap-6 mb-8"
           variants={containerVariants}
         >
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <motion.div 
               key={stat.title} 
               className="glass-effect border-slate-700 rounded-lg p-6"
@@ -376,7 +360,6 @@ export default function Dashboard() {
                         onRemoveFromWatchlist={handleRemoveFromWatchlist}
                         currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
                         currentEpisode={trackedMap[anime.id]?.episode || 1}
-                        onUpdateStatus={handleUpdateStatus}
                       />
                       <div className="absolute bottom-3 left-3 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
                         Ep {trackedMap[anime.id]?.episode || 1}
@@ -497,7 +480,7 @@ export default function Dashboard() {
                   <div className="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
-                trendingAnime.map((anime, index) => (
+                trendingAnime.map((anime) => (
                   <motion.div 
                     key={anime.id} 
                     className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition-colors cursor-pointer"

@@ -1,0 +1,32 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The ID of the user to notify"
+    },
+    "anime_id": {
+      "type": "number",
+      "description": "The mal_id of the related anime"
+    },
+    "episode_number": {
+      "type": "number",
+      "description": "The new episode number"
+    },
+    "episode_type": {
+      "type": "string",
+      "enum": ["canon", "filler", "recap", "mixed"],
+      "description": "The type of the new episode"
+    },
+    "message": {
+      "type": "string",
+      "description": "The notification message content"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": ["user_id", "anime_id", "message"]
+} 

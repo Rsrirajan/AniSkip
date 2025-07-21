@@ -1,0 +1,43 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "subscription_tier": {
+      "type": "string",
+      "enum": ["free", "pro", "premium"],
+      "default": "free",
+      "description": "Subscription tier"
+    },
+    "subscription_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Subscription expiry date"
+    },
+    "notifications_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Email notifications enabled"
+    },
+    "preferred_genres": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Preferred genres"
+    },
+    "watch_goal": {
+      "type": "number",
+      "description": "Monthly watch goal in hours"
+    },
+    "time_zone": {
+      "type": "string",
+      "description": "User timezone"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark", "auto"],
+      "default": "auto",
+      "description": "Theme preference"
+    }
+  }
+} 

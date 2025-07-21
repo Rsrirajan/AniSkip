@@ -1,0 +1,45 @@
+{
+  "name": "Episode",
+  "type": "object",
+  "properties": {
+    "anime_id": {
+      "type": "number",
+      "description": "Reference to Anime mal_id"
+    },
+    "episode_number": {
+      "type": "number",
+      "description": "Episode number"
+    },
+    "title": {
+      "type": "string",
+      "description": "Episode title"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["canon", "filler", "recap", "mixed"],
+      "description": "Episode type"
+    },
+    "recap_timestamp": {
+      "type": "number",
+      "description": "Timestamp where recap ends (seconds)"
+    },
+    "skip_summary": {
+      "type": "string",
+      "description": "AI-generated summary of skipped content"
+    },
+    "aired_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Air date"
+    },
+    "duration": {
+      "type": "number",
+      "description": "Episode duration in minutes"
+    },
+    "filler_percentage": {
+      "type": "number",
+      "description": "Percentage of filler content"
+    }
+  },
+  "required": ["anime_id", "episode_number"]
+} 

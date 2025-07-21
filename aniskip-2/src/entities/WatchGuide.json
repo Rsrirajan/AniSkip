@@ -1,0 +1,32 @@
+{
+  "name": "WatchGuide",
+  "type": "object",
+  "properties": {
+    "anime_id": {
+      "type": "number",
+      "description": "The mal_id of the anime this guide is for"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the watch guide (e.g., Danganronpa Chronological Order)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Explanation of why this watch guide is needed"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_number": { "type": "number" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "related_anime_id": { "type": "number" },
+          "related_episode_number": { "type": "number" }
+        }
+      }
+    }
+  },
+  "required": ["anime_id", "title", "steps"]
+} 

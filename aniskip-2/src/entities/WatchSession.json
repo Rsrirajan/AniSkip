@@ -1,0 +1,42 @@
+{
+  "name": "WatchSession",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User ID"
+    },
+    "anime_id": {
+      "type": "number",
+      "description": "Anime mal_id"
+    },
+    "episode_number": {
+      "type": "number",
+      "description": "Episode number"
+    },
+    "watch_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date watched"
+    },
+    "duration_watched": {
+      "type": "number",
+      "description": "Minutes watched"
+    },
+    "skipped_recap": {
+      "type": "boolean",
+      "default": false,
+      "description": "Used skip recap feature"
+    },
+    "skipped_filler": {
+      "type": "boolean",
+      "default": false,
+      "description": "Used skip filler feature"
+    },
+    "time_saved": {
+      "type": "number",
+      "description": "Minutes saved by skipping"
+    }
+  },
+  "required": ["user_id", "anime_id", "episode_number"]
+} 

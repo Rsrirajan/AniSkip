@@ -1,0 +1,49 @@
+{
+  "name": "WatchList",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User ID"
+    },
+    "anime_id": {
+      "type": "number",
+      "description": "Anime mal_id"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["watching", "completed", "plan_to_watch", "dropped", "on_hold"],
+      "default": "plan_to_watch",
+      "description": "Watch status"
+    },
+    "current_episode": {
+      "type": "number",
+      "default": 0,
+      "description": "Current episode progress"
+    },
+    "rating": {
+      "type": "number",
+      "description": "User rating (1-10)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User notes"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date started watching"
+    },
+    "finish_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date finished watching"
+    },
+    "favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is favorite"
+    }
+  },
+  "required": ["user_id", "anime_id"]
+} 

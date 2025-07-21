@@ -32,7 +32,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <h2 className="font-bold text-xl gradient-text">AnimeSkip</h2>
-            <p className="text-xs text-slate-400">Pro Anime Tracker</p>
+            <div className="flex gap-2 mt-1">
+              <span className="px-1.5 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[9px] font-medium border border-slate-700">Filler Lists</span>
+              <span className="px-1.5 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[9px] font-medium border border-slate-700">Watch Guides</span>
+            </div>
           </div>
         </div>
         

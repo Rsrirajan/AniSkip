@@ -156,12 +156,16 @@ const Landing: React.FC = () => {
       <header className="w-full bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 px-6 py-4 flex items-center justify-between border-b border-purple-800/40 backdrop-blur-xl sticky top-0 z-50">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
-            <Play className="w-6 h-6 text-white" />
+          <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
+            <Play className="w-8 h-8 text-white" />
           </div>
-          <h2 className="font-bold text-xl text-white">
-            Anime<span className="text-purple-400">Skip</span>
-          </h2>
+          <div>
+            <h2 className="font-bold text-2xl gradient-text">AnimeSkip</h2>
+            <div className="flex gap-2 mt-1">
+              <span className="px-2 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[10px] font-medium border border-slate-700">Filler Lists</span>
+              <span className="px-2 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[10px] font-medium border border-slate-700">Watch Guides</span>
+            </div>
+          </div>
         </div>
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="relative flex-1 max-w-md mx-8">

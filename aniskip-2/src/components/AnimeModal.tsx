@@ -145,6 +145,67 @@ function useJikanStreamingSites(malId?: number) {
   return streamingSites;
 }
 
+// Helper to fetch episode data from Jikan API
+function useJikanEpisodes(malId?: number, totalEpisodes?: number) {
+  const [episodes, setEpisodes] = useState<{
+    number: number;
+    title: string;
+    filler: boolean;
+    recap: boolean;
+    synopsis?: string;
+  }[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!malId || !totalEpisodes) return;
+    
+    setLoading(true);
+    const fetchEpisodes = async () => {
+      const episodePromises = [];
+      const maxEpisodes = Math.min(totalEpisodes, 10); // Limit to first 10 episodes to avoid rate limiting
+      
+      for (let i = 1; i <= maxEpisodes; i++) {
+        episodePromises.push(
+          fetch(`https://api.jikan.moe/v4/anime/${malId}/episodes/${i}`)
+            .then(res => res.ok ? res.json() : null)
+            .then(json => json?.data ? {
+              number: json.data.mal_id || i,
+              title: json.data.title || `Episode ${i}`,
+              filler: json.data.filler || false,
+              recap: json.data.recap || false,
+              synopsis: json.data.synopsis || undefined
+            } : {
+              number: i,
+              title: `Episode ${i}`,
+              filler: false,
+              recap: false
+            })
+            .catch(() => ({
+              number: i,
+              title: `Episode ${i}`,
+              filler: false,
+              recap: false
+            }))
+        );
+      }
+      
+      try {
+        const results = await Promise.all(episodePromises);
+        setEpisodes(results);
+      } catch (error) {
+        console.error('Error fetching episodes:', error);
+        setEpisodes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchEpisodes();
+  }, [malId, totalEpisodes]);
+  
+  return { episodes, loading };
+}
+
 export default function AnimeModal({ 
   anime, 
   isOpen, 
@@ -198,6 +259,7 @@ export default function AnimeModal({
   // Use MyAnimeList ID for Jikan API if available
   const malId = (anime as any).mal_id;
   const streamingSites = useJikanStreamingSites(malId);
+  const { episodes: jikanEpisodes, loading: episodesLoading } = useJikanEpisodes(malId, anime.episodes);
 
   return (
     <AnimatePresence>
@@ -384,14 +446,6 @@ export default function AnimeModal({
                   </div>
                 )}
 
-                {/* Debug: Show message if userId is missing */}
-                {!userId && (
-                  <div className="p-4 bg-red-900/20 border border-red-700/40 rounded-lg text-red-300 text-center mt-4">
-                    <strong>Debug:</strong> userId is missing. You must be logged in to see the status board.<br/>
-                    If you are logged in and still see this, check authentication logic in the parent component.
-                  </div>
-                )}
-
                 {/* Action Buttons */}
                 <div className="flex gap-3 mt-4">
                   {onAddToWatchlist && (
@@ -517,7 +571,7 @@ export default function AnimeModal({
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                       <Star className="w-5 h-5 text-yellow-400" /> Episode Breakdown
                     </h3>
-                    {isProUser ? (
+                    {true ? ( // All features are now free
                       EPISODE_GUIDES[anime.id] ? (
                         <>
                           <div className="overflow-x-auto mb-2">
@@ -556,7 +610,7 @@ export default function AnimeModal({
                         <Lock className="w-8 h-8 text-purple-400 mb-2" />
                         <div className="text-purple-200 font-semibold mb-1">Pro Feature Locked</div>
                         <div className="text-slate-400 mb-2 text-center">Upgrade to Pro to unlock filler skips, episode breakdowns, and save hours on your anime journey!</div>
-                        <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-bold shadow-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-200">Upgrade to Pro</button>
+                        <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-bold shadow-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-200" onClick={() => navigate('/plans')}>Upgrade to Pro</button>
                       </div>
                     )}
                   </div>
@@ -592,24 +646,51 @@ export default function AnimeModal({
                   </div>
                 )}
 
-                {/* Upgrade to Pro Button for non-pro users */}
-                {!isProUser && (
-                  <div className="mt-8 flex justify-center">
-                    <button
-                      onClick={() => navigate('/subscription')}
-                      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-lg shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition-all text-lg"
-                    >
-                      Upgrade to Pro for Streaming Links & More
-                    </button>
+                {/* Jikan Episode Breakdown */}
+                {malId && jikanEpisodes.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Star className="w-5 h-5 text-green-400" /> Live Episode Data
+                    </h3>
+                    {episodesLoading ? (
+                      <div className="text-slate-400 text-sm">Loading episode data...</div>
+                    ) : (
+                      <>
+                        <div className="overflow-x-auto mb-4">
+                          <table className="min-w-[400px] w-full text-sm text-left text-slate-300">
+                            <thead>
+                              <tr className="border-b border-slate-700">
+                                <th className="px-3 py-2 font-semibold">Episode</th>
+                                <th className="px-3 py-2 font-semibold">Title</th>
+                                <th className="px-3 py-2 font-semibold">Type</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {jikanEpisodes.map(ep => (
+                                <tr key={ep.number} className="border-b border-slate-800/50">
+                                  <td className="px-3 py-2 font-bold">{ep.number}</td>
+                                  <td className="px-3 py-2 text-slate-300 truncate max-w-[200px]" title={ep.title}>{ep.title}</td>
+                                  <td className="px-3 py-2">
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      ep.filler ? 'bg-red-900/40 text-red-300 border border-red-700/50' :
+                                      ep.recap ? 'bg-yellow-900/40 text-yellow-300 border border-yellow-700/50' :
+                                      'bg-green-900/40 text-green-300 border border-green-700/50'
+                                    }`}>
+                                      {ep.filler ? 'Filler' : ep.recap ? 'Recap' : 'Canon'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          Showing first {jikanEpisodes.length} episodes • Data from MyAnimeList
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
-
-                {/* TODO: Add Jikan episode breakdown here */}
-                <div className="mt-6 p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
-                  <p className="text-slate-400 text-sm">
-                    Episode breakdown and filler information coming soon...
-                  </p>
-                </div>
               </div>
             </div>
           </motion.div>

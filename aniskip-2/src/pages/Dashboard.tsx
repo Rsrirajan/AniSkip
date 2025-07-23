@@ -272,9 +272,9 @@ export default function Dashboard() {
               className="flex items-center gap-3"
               variants={textVariants}
             >
-              <div className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/50 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+              <div className="bg-green-500/20 text-green-300 border border-green-500/50 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
                 <Crown className="w-4 h-4" />
-                Free Plan
+                All Features Free!
               </div>
               <button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
                 <Play className="w-4 h-4" />

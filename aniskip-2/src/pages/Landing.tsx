@@ -153,17 +153,17 @@ const Landing: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header - Simple */}
-      <header className="w-full bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 px-6 py-4 flex items-center justify-between border-b border-purple-800/40 backdrop-blur-xl sticky top-0 z-50">
+      <header className="w-full px-6 py-4 flex items-center justify-between border-b border-purple-800/40 bg-white/10 backdrop-blur-lg fixed top-0 left-0 right-0 z-50" style={{background: 'rgba(30, 27, 75, 0.5)'}}>
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <Play className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h2 className="font-bold text-2xl gradient-text">AnimeSkip</h2>
-            <div className="flex gap-2 mt-1">
-              <span className="px-2 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[10px] font-medium border border-slate-700">Filler Lists</span>
-              <span className="px-2 py-0.5 bg-slate-800/70 text-slate-200 rounded-full text-[10px] font-medium border border-slate-700">Watch Guides</span>
+            <h2 className="font-bold text-2xl gradient-text">AniSkip</h2>
+            <div className="flex gap-2 mt-1 items-center">
+              <span className="px-1.5 py-0.5 bg-slate-800/60 text-slate-300 rounded-full text-[8px] font-normal border border-slate-700" style={{minWidth: 'unset', lineHeight: '1.1'}}>Filler Lists</span>
+              <span className="px-1.5 py-0.5 bg-slate-800/60 text-slate-300 rounded-full text-[8px] font-normal border border-slate-700" style={{minWidth: 'unset', lineHeight: '1.1'}}>Watch Guides</span>
             </div>
           </div>
         </div>
@@ -182,42 +182,42 @@ const Landing: React.FC = () => {
         </form>
         {/* User/Lang */}
         <div className="flex items-center gap-4">
-          {/* Personalized Welcome */}
-          {user && (
-            <span className="text-slate-300 text-base font-medium mr-2">
-              {(() => {
-                const email = user.email || "";
-                const username = email.split("@")[0];
-                // Use localStorage to check if this is the first time
-                let greeted = false;
-                try {
-                  greeted = localStorage.getItem("welcomed_" + username) === "1";
-                  if (!greeted) localStorage.setItem("welcomed_" + username, "1");
-                } catch {}
-                return greeted
-                  ? `Welcome back, ${username}`
-                  : `Welcome, ${username}`;
-              })()}
-            </span>
-          )}
           {user ? (
-            <button 
-              onClick={() => navigate('/dashboard')}
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
-            >
-              Dashboard
-            </button>
-          ) : (
             <>
-              <Link to="/join" className="text-slate-300 hover:text-white transition-colors font-medium">Sign In</Link>
-              <Link to="/signup" className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200">Sign Up</Link>
+              <span className="text-slate-300 text-base font-medium mr-2">
+                {(() => {
+                  const email = user.email || "";
+                  const username = email.split("@")[0];
+                  let greeted = false;
+                  try {
+                    greeted = localStorage.getItem("welcomed_" + username) === "1";
+                    if (!greeted) localStorage.setItem("welcomed_" + username, "1");
+                  } catch {}
+                  return greeted
+                    ? `Welcome back, ${username}`
+                    : `Welcome, ${username}`;
+                })()}
+              </span>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+              >
+                Dashboard
+              </button>
             </>
+          ) : (
+            <button
+              onClick={() => navigate('/signup')}
+              className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+            >
+              Join
+            </button>
           )}
         </div>
       </header>
 
       {/* Hero Carousel - Large immersive */}
-      <section className="relative w-full mx-auto mt-0 mb-12" style={{height: '70vh', minHeight: 480, maxHeight: 700}}>
+      <section className="relative w-full mx-auto mt-0 mb-12" style={{height: 'calc(100vh - 0px)', minHeight: 600, maxHeight: '100vh', paddingTop: 0}}>
         <div className="relative w-full h-full" style={{height: '100%'}}>
           {loading ? (
             <div className="flex items-center justify-center h-full">
@@ -240,7 +240,7 @@ const Landing: React.FC = () => {
                     src={featuredAnime[carouselIndex].bannerImage || featuredAnime[carouselIndex].coverImage.large}
                     alt={featuredAnime[carouselIndex].title.romaji}
                     className="object-cover w-full h-full absolute inset-0 z-0"
-                    style={{filter: 'brightness(0.55)'}}
+                    style={{filter: 'brightness(0.55)', objectPosition: 'top'}}
                   />
                   {/* Overlay gradient for readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
@@ -302,7 +302,7 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Trending Section */}
-      <section className="max-w-7xl mx-auto mt-16 px-8">
+      <section id="trending-section" className="max-w-7xl mx-auto mt-16 px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -312,7 +312,6 @@ const Landing: React.FC = () => {
             <TrendingUp className="w-8 h-8 text-purple-400" />
             Trending This Week
           </h2>
-          <p className="text-slate-400 mb-6">Most popular anime gaining traction this week</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {trendingAnime.length > 0 ? (
               trendingAnime.map((anime, index) => (
@@ -362,11 +361,7 @@ const Landing: React.FC = () => {
               <Calendar className="w-8 h-8 text-purple-400" />
               {getCurrentSeason().season.charAt(0) + getCurrentSeason().season.slice(1).toLowerCase()} {getCurrentSeason().year}
             </h2>
-            <div className="text-slate-400 text-sm">
-              Current season anime
-            </div>
           </div>
-          <p className="text-slate-400 mb-6">Latest releases from the current anime season</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {seasonalAnime.length > 0 ? (
               seasonalAnime.map((anime, index) => (
@@ -415,7 +410,7 @@ const Landing: React.FC = () => {
                   <Play className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl text-white">AnimeSkip</h3>
+                  <h3 className="font-bold text-xl text-white">AniSkip</h3>
                   <p className="text-xs text-slate-400">Pro Anime Tracker</p>
                 </div>
               </div>
@@ -453,7 +448,7 @@ const Landing: React.FC = () => {
           
           <div className="border-t border-slate-800 mt-8 pt-8 text-center">
             <p className="text-slate-400 text-sm">
-              © 2024 AnimeSkip. All rights reserved. Made with ❤️ for anime fans.
+              © 2024 AniSkip. All rights reserved. Made with ❤️ for anime fans.
             </p>
           </div>
         </div>

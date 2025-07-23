@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getAnimeDetails, Anime } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
 import AddToListButton from "../components/details/AddToListButton";
-import EpisodeList from "../components/details/EpisodeList";
+import EnhancedEpisodeList from "../components/details/EnhancedEpisodeList";
 
 export default function AnimeDetails() {
   const { id } = useParams();
@@ -74,7 +74,7 @@ export default function AnimeDetails() {
             {userId && <AddToListButton anime={anime} userId={userId} initialStatus={initialStatus} />}
           </div>
         </div>
-        {userId && <EpisodeList anime={anime} userId={userId} />}
+        {userId && <EnhancedEpisodeList anime={anime} userId={userId} />}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import SubscriptionPage from "./pages/Subscription"
 import JoinPage from "./pages/join"
 import Signup from "./pages/Signup"
 import WatchGuides from "./pages/WatchGuides"
+import PlansPage from "./pages/premium";
 import { supabase } from "./lib/supabaseClient"
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -53,6 +54,7 @@ function App() {
         <Route path="/" element={<RedirectIfAuth><Landing /></RedirectIfAuth>} />
         <Route path="/premium" element={<PremiumPage />} />
         <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route path="/plans" element={<PlansPage />} />
         <Route path="/join" element={<RedirectIfAuth><JoinPage /></RedirectIfAuth>} />
         <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
         <Route

@@ -154,26 +154,16 @@ const Settings: React.FC = () => {
                   <input type="number" value={watchGoal} onChange={e => setWatchGoal(Number(e.target.value))} className="w-full px-4 py-2 rounded-lg bg-slate-900 text-white border border-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500" />
                 </div>
               </div>
-              {/* Pro-only: New Episode Notifications */}
+              {/* New Episode Notifications - Now free for all */}
               <div className="flex items-center gap-3 mt-4">
                 <label className="text-purple-200">New Episode Notifications</label>
-                {plan === 'pro' ? (
-                  <input
-                    type="checkbox"
-                    checked={newEpisodeNotifications}
-                    onChange={e => setNewEpisodeNotifications(e.target.checked)}
-                    className="accent-purple-500 w-5 h-5"
-                  />
-                ) : (
-                  <span className="flex items-center gap-2 text-slate-400">
-                    <input type="checkbox" checked={false} disabled className="w-5 h-5" />
-                    <Lock className="w-4 h-4 text-purple-400" />
-                    <span className="text-xs">Pro Only</span>
-                  </span>
-                )}
-                {plan !== 'pro' && (
-                  <button onClick={() => window.location.href = '/subscription'} className="ml-2 text-purple-300 hover:text-white text-xs underline">Upgrade</button>
-                )}
+                <input
+                  type="checkbox"
+                  checked={newEpisodeNotifications}
+                  onChange={e => setNewEpisodeNotifications(e.target.checked)}
+                  className="accent-purple-500 w-5 h-5"
+                />
+                <span className="text-xs text-green-400">✨ Free for everyone!</span>
               </div>
               {/* NSFW Toggle */}
               <div className="flex items-center gap-3 mt-4">
@@ -214,79 +204,33 @@ const Settings: React.FC = () => {
               </div>
             </div>
           </div>
-          {/* Sidebar: Subscription & Quick Stats */}
+          {/* Sidebar: Quick Stats */}
           <div className="flex flex-col gap-8">
-            <div className="bg-white/10 rounded-2xl p-8 shadow-xl border border-white/10 mb-4">
-              <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2"><Crown className="w-5 h-5 text-yellow-400" /> Subscription</h2>
-              <div className="mb-2">
-                <span className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/50 px-3 py-1 rounded-full text-sm font-medium">{plan === "free" ? "Free Plan" : "Pro Plan"}</span>
-              </div>
-              <ul className="text-purple-200 text-sm mb-4">
-                <li>✓ Unlimited tracking</li>
-                <li>✓ Skip summaries</li>
-                <li>✓ Advanced insights</li>
-                <li>✓ Cross-platform sync</li>
-              </ul>
-              <button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2">
-                <Crown className="w-4 h-4" /> Upgrade to Pro
-              </button>
-            </div>
             <div className="bg-white/10 rounded-2xl p-8 shadow-xl border border-white/10">
-              <h2 className="text-lg font-bold text-white mb-2">Quick Stats</h2>
+              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <Crown className="w-5 h-5 text-green-400" /> All Features Free!
+              </h2>
+              <ul className="text-green-200 text-sm mb-4">
+                <li>✅ Unlimited tracking</li>
+                <li>✅ Episode breakdowns</li>
+                <li>✅ Smart watch guides</li>
+                <li>✅ Progress tracking</li>
+                <li>✅ NSFW filtering</li>
+                <li>✅ Episode notifications</li>
+              </ul>
+              <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-3 text-center">
+                <span className="text-green-300 font-medium text-sm">🎉 Everything included at no cost!</span>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 rounded-2xl p-8 shadow-xl border border-white/10">
+              <h2 className="text-lg font-bold text-white mb-2">Account Info</h2>
               <div className="text-purple-200 text-sm mb-2">Member since <span className="text-white font-semibold">{createdAt}</span></div>
-              <div className="text-purple-200 text-sm">Account type <span className="text-white font-semibold">{plan}</span></div>
+              <div className="text-purple-200 text-sm">All features <span className="text-green-400 font-semibold">free</span></div>
             </div>
           </div>
         </motion.div>
 
-        {/* Pro Features Section */}
-        {plan !== 'pro' && (
-          <div className="glass-effect border-slate-700 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Crown className="w-5 h-5 text-yellow-400" />
-              Upgrade to Pro
-            </h2>
-            <p className="text-slate-300 mb-4">
-              Unlock advanced features like episode breakdowns, smart watch guides, and more!
-            </p>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => navigate('/subscription')}
-                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
-              >
-                View Plans
-              </button>
-              <button 
-                onClick={handleUpgradeToPro}
-                disabled={saving}
-                className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200 disabled:opacity-50"
-              >
-                {saving ? "Upgrading..." : "Upgrade to Pro (Free)"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Pro-only: New Episode Notifications */}
-        {plan === 'pro' && (
-          <div className="glass-effect border-slate-700 rounded-lg p-6 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-purple-200">New Episode Notifications</label>
-                <p className="text-slate-400 text-sm">Get notified when new episodes of your watched anime are released</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={newEpisodeNotifications}
-                  onChange={e => setNewEpisodeNotifications(e.target.checked)}
-                />
-                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

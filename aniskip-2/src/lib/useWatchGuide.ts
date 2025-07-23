@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { WatchGuide, generateWatchGuide, searchAndGenerateWatchGuide } from '../services/watchGuideService';
+import { FranchiseWatchGuide, searchFranchiseWatchGuide, getAllFranchiseGuides } from '../services/franchiseWatchGuideService';
 
 interface UseWatchGuideReturn {
   guides: WatchGuide[];
+  franchiseGuides: FranchiseWatchGuide[];
   loading: boolean;
   error: string | null;
   searchGuides: (query: string) => Promise<void>;
@@ -13,9 +15,11 @@ interface UseWatchGuideReturn {
 // Simple in-memory cache
 const guideCache = new Map<number, WatchGuide>();
 const searchCache = new Map<string, WatchGuide>();
+const franchiseCache = new Map<string, FranchiseWatchGuide>();
 
 export const useWatchGuide = (): UseWatchGuideReturn => {
   const [guides, setGuides] = useState<WatchGuide[]>([]);
+  const [franchiseGuides, setFranchiseGuides] = useState<FranchiseWatchGuide[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,8 +32,12 @@ export const useWatchGuide = (): UseWatchGuideReturn => {
       setLoading(true);
       setError(null);
       
-      // For demo purposes, load a few popular anime guides
-      const popularAnimeIds = [21, 20, 1735, 269, 223, 813, 30694, 235, 6702, 11061]; // One Piece, Naruto, etc.
+      // Load franchise guides first (these are more comprehensive)
+      const loadedFranchiseGuides = await getAllFranchiseGuides();
+      setFranchiseGuides(loadedFranchiseGuides);
+      
+      // Load individual anime guides for non-franchise anime
+      const popularAnimeIds = [21, 6702, 11061, 16498, 31964, 38000, 40748, 34572]; // One Piece, Fairy Tail, etc.
       const loadedGuides: WatchGuide[] = [];
 
       for (const malId of popularAnimeIds) {
@@ -64,6 +72,7 @@ export const useWatchGuide = (): UseWatchGuideReturn => {
   const searchGuides = useCallback(async (query: string) => {
     if (!query.trim()) {
       setGuides([]);
+      setFranchiseGuides([]);
       return;
     }
 
@@ -71,10 +80,31 @@ export const useWatchGuide = (): UseWatchGuideReturn => {
       setLoading(true);
       setError(null);
 
-      // Check search cache first
+      // First try to find a franchise guide
+      const franchiseCacheKey = query.toLowerCase().trim();
+      let franchiseResult = null;
+      
+      if (franchiseCache.has(franchiseCacheKey)) {
+        franchiseResult = franchiseCache.get(franchiseCacheKey)!;
+      } else {
+        franchiseResult = await searchFranchiseWatchGuide(query);
+        if (franchiseResult) {
+          franchiseCache.set(franchiseCacheKey, franchiseResult);
+        }
+      }
+      
+      if (franchiseResult) {
+        // Show franchise guide
+        setFranchiseGuides([franchiseResult]);
+        setGuides([]);
+        return;
+      }
+
+      // If no franchise guide found, try individual anime guide
       const cacheKey = query.toLowerCase().trim();
       if (searchCache.has(cacheKey)) {
         setGuides([searchCache.get(cacheKey)!]);
+        setFranchiseGuides([]);
         return;
       }
 
@@ -85,13 +115,16 @@ export const useWatchGuide = (): UseWatchGuideReturn => {
         searchCache.set(cacheKey, result);
         guideCache.set(result.malId, result);
         setGuides([result]);
+        setFranchiseGuides([]);
       } else {
         setGuides([]);
+        setFranchiseGuides([]);
       }
     } catch (err) {
       setError('Failed to search for watch guides. Please try again later.');
       console.error('Error searching guides:', err);
       setGuides([]);
+      setFranchiseGuides([]);
     } finally {
       setLoading(false);
     }
@@ -104,6 +137,7 @@ export const useWatchGuide = (): UseWatchGuideReturn => {
 
   return {
     guides,
+    franchiseGuides,
     loading,
     error,
     searchGuides,

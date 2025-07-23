@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { Anime } from '../../services/anilist';
+import { useUserPlan } from '../../lib/useUserPlan';
 
 interface EpisodeListProps {
   anime: Anime;
@@ -45,7 +46,9 @@ const EpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
     } else {
       console.error('Error updating progress:', error);
     }
-  };
+}
+
+  const { plan } = useUserPlan();
 
   if (loading) {
     return <div>Loading episodes...</div>;
@@ -56,17 +59,22 @@ const EpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
       <h2 className="text-2xl font-bold text-white mb-4">Episodes</h2>
       <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
         {Array.from({ length: anime.episodes }, (_, i) => i + 1).map(episode => (
-          <button
+          <div
             key={episode}
-            onClick={() => handleEpisodeToggle(episode)}
-            className={`p-2 rounded-md text-center ${
+            className={`p-2 rounded-md text-center cursor-pointer ${
               watchedEpisodes.includes(episode)
                 ? 'bg-green-500 text-white'
                 : 'bg-gray-700 text-gray-300'
             }`}
+            onClick={() => handleEpisodeToggle(episode)}
           >
-            {episode}
-          </button>
+            {episode}
+            {plan === 'pro' && (
+              <span className="ml-2 text-xs">
+                {`(${episode % 5 === 0 ? 'recap' : 'canon'})`}
+              </span>
+            )}
+          </div>
         ))}
       </div>
     </div>

@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
                   <path d="M8 5v14l11-7L8 5z" fill="#fff" />
                 </svg>
               </div>
-              <span className="text-3xl font-bold text-white tracking-wide">AnimeSkip</span>
+              <span className="text-3xl font-bold text-white tracking-wide">AniSkip</span>
             </div>
             <p className="text-slate-400 max-w-md">
               Skip the fillers, track your progress, and discover amazing anime. The ultimate anime tracking experience for true fans.
@@ -84,7 +84,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-500 text-sm">
-            © 2024 AnimeSkip. All rights reserved. Made with ❤️ for anime fans.
+            © 2024 AniSkip. All rights reserved. Made with ❤️ for anime fans.
           </p>
           {/* Only show sign in/up if not logged in */}
           {!user && (

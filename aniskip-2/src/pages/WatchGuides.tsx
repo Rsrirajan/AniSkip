@@ -5,12 +5,14 @@ import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchGuide } from "../lib/useWatchGuide";
 import { WatchGuide } from "../services/watchGuideService";
 import { useNavigate } from "react-router-dom";
+import Paywall from "../components/ui/Paywall";
 
 const WatchGuides: React.FC = () => {
   const { plan, loading: planLoading } = useUserPlan();
   const [selectedGuide, setSelectedGuide] = useState<WatchGuide | null>(null);
+  const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const { guides, loading, error, searchGuides, loadPopularGuides, clearError } = useWatchGuide();
+  const { guides, franchiseGuides, loading, error, searchGuides, loadPopularGuides, clearError } = useWatchGuide();
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -27,7 +29,7 @@ const WatchGuides: React.FC = () => {
   };
 
   const handleUpgradeToPro = () => {
-    navigate('/subscription');
+    navigate('/plans');
   };
 
   if (planLoading) {
@@ -112,7 +114,7 @@ const WatchGuides: React.FC = () => {
               <p className="text-slate-400 text-sm mt-2">This may take a few moments as we fetch episode data</p>
             </div>
           </div>
-        ) : guides.length === 0 ? (
+        ) : guides.length === 0 && franchiseGuides.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-slate-400 mb-4">
               <Search className="w-16 h-16 mx-auto" />
@@ -128,87 +130,195 @@ const WatchGuides: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {guides.map((guide, index) => (
-              <motion.div
-                key={guide.malId}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-effect border-slate-700 rounded-lg overflow-hidden"
-              >
-                <div className="relative">
-                  
-                  {guide.proOnly && (
-                    <div className="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                      <Crown className="w-4 h-4" />
-                      Pro Only
-                    </div>
-                  )}
-                </div>
-                
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-white mb-2">{guide.title}</h2>
-                  <p className="text-slate-300 text-sm mb-4 line-clamp-2">{guide.description}</p>
-                  
-                  <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {guide.stats.watchTime}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <SkipForward className="w-4 h-4" />
-                      Save {guide.stats.timeSaved}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4" />
-                      {guide.stats.canonEpisodes}
-                    </div>
-                  </div>
-
-                  {/* Stats Overview */}
-                  <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
-                    <div className="bg-slate-800/50 rounded p-2 text-center">
-                      <div className="text-white font-semibold">{guide.totalEpisodes}</div>
-                      <div className="text-slate-400">Total</div>
-                    </div>
-                    <div className="bg-red-900/20 border border-red-700/30 rounded p-2 text-center">
-                      <div className="text-red-400 font-semibold">{guide.stats.fillerEpisodes}</div>
-                      <div className="text-slate-400">Filler</div>
-                    </div>
-                    <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
-                      <div className="text-green-400 font-semibold">{guide.stats.canonEpisodes}</div>
-                      <div className="text-slate-400">Watch</div>
-                    </div>
-                  </div>
-
-                  {guide.proOnly && plan !== 'pro' ? (
-                    <div className="bg-slate-800/60 border border-purple-700/40 rounded-lg p-4 mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Lock className="w-5 h-5 text-purple-400" />
-                        <span className="text-purple-200 font-semibold">Pro Feature Locked</span>
-                      </div>
-                      <p className="text-slate-400 text-sm mb-3">
-                        Upgrade to Pro to access detailed watch guides with episode-by-episode recommendations.
-                      </p>
-                      <button 
-                        onClick={handleUpgradeToPro}
-                        className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
-                      >
-                        Upgrade to Pro
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setSelectedGuide(guide)}
-                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+          <div className="space-y-8">
+            {/* Franchise Guides */}
+            {franchiseGuides.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-6">📺 Franchise Watch Guides</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {franchiseGuides.map((franchiseGuide, index) => (
+                    <motion.div
+                      key={franchiseGuide.franchiseName}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="glass-effect border-slate-700 rounded-lg overflow-hidden"
                     >
-                      View Guide
-                    </button>
-                  )}
+                      <div className="relative">
+                        <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                          <Crown className="w-4 h-4" />
+                          Franchise Guide
+                        </div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <h2 className="text-xl font-bold text-white mb-2">{franchiseGuide.franchiseName} Series</h2>
+                        <p className="text-slate-300 text-sm mb-4 line-clamp-2">{franchiseGuide.description}</p>
+                        
+                        <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {franchiseGuide.totalEpisodes} episodes
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4" />
+                            {franchiseGuide.totalAnimeEntries} series
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <SkipForward className="w-4 h-4" />
+                            Save {Math.round(franchiseGuide.combinedStats.timeSaved / 60)}h
+                          </div>
+                        </div>
+
+                        {/* Combined Stats Overview */}
+                        <div className="grid grid-cols-4 gap-2 mb-4 text-xs">
+                          <div className="bg-slate-800/50 rounded p-2 text-center">
+                            <div className="text-white font-semibold">{franchiseGuide.totalEpisodes}</div>
+                            <div className="text-slate-400">Total</div>
+                          </div>
+                          <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
+                            <div className="text-green-400 font-semibold">{franchiseGuide.combinedStats.canonEpisodes}</div>
+                            <div className="text-slate-400">Canon</div>
+                          </div>
+                          <div className="bg-red-900/20 border border-red-700/30 rounded p-2 text-center">
+                            <div className="text-red-400 font-semibold">{franchiseGuide.combinedStats.fillerEpisodes}</div>
+                            <div className="text-slate-400">Filler</div>
+                          </div>
+                          <div className="bg-yellow-900/20 border border-yellow-700/30 rounded p-2 text-center">
+                            <div className="text-yellow-400 font-semibold">{franchiseGuide.combinedStats.recapEpisodes}</div>
+                            <div className="text-slate-400">Recap</div>
+                          </div>
+                        </div>
+
+                        {franchiseGuide.proOnly && plan !== 'pro' ? (
+                          <Paywall
+                            title="Complete Franchise Guide"
+                            description="Get the complete watch order and episode breakdowns"
+                            features={[
+                              "Complete franchise watch order",
+                              "Episode-by-episode recommendations for all series",
+                              "Special viewing instructions (like Danganronpa's alternating order)",
+                              "Combined statistics across all series",
+                              "Optimal time-saving strategies"
+                            ]}
+                            className="mb-4"
+                          >
+                            <div className="p-4">
+                              <div className="space-y-2">
+                                {Array.from({ length: 3 }, (_, i) => (
+                                  <div key={i} className="bg-slate-700 h-4 rounded animate-pulse"></div>
+                                ))}
+                              </div>
+                            </div>
+                          </Paywall>
+                        ) : (
+                          <button
+                            onClick={() => setSelectedFranchiseGuide(franchiseGuide)}
+                            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                          >
+                            View Complete Guide
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            )}
+
+            {/* Individual Guides */}
+            {guides.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-6">🎌 Individual Anime Guides</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {guides.map((guide, index) => (
+                    <motion.div
+                      key={guide.malId}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="glass-effect border-slate-700 rounded-lg overflow-hidden"
+                    >
+                      <div className="relative">
+                        
+                        {guide.proOnly && (
+                          <div className="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                            <Crown className="w-4 h-4" />
+                            Pro Only
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="p-6">
+                        <h2 className="text-xl font-bold text-white mb-2">{guide.title}</h2>
+                        <p className="text-slate-300 text-sm mb-4 line-clamp-2">{guide.description}</p>
+                        
+                        <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {guide.stats.watchTime}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <SkipForward className="w-4 h-4" />
+                            Save {guide.stats.timeSaved}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4" />
+                            {guide.stats.canonEpisodes}
+                          </div>
+                        </div>
+
+                        {/* Stats Overview */}
+                        <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
+                          <div className="bg-slate-800/50 rounded p-2 text-center">
+                            <div className="text-white font-semibold">{guide.totalEpisodes}</div>
+                            <div className="text-slate-400">Total</div>
+                          </div>
+                          <div className="bg-red-900/20 border border-red-700/30 rounded p-2 text-center">
+                            <div className="text-red-400 font-semibold">{guide.stats.fillerEpisodes}</div>
+                            <div className="text-slate-400">Filler</div>
+                          </div>
+                          <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
+                            <div className="text-green-400 font-semibold">{guide.stats.canonEpisodes}</div>
+                            <div className="text-slate-400">Watch</div>
+                          </div>
+                        </div>
+
+                        {guide.proOnly && plan !== 'pro' ? (
+                          <Paywall
+                            title="Smart Watch Guide"
+                            description="Get detailed episode-by-episode recommendations"
+                            features={[
+                              "Episode-by-episode recommendations",
+                              "Time-saving insights",
+                              "Skip vs Watch suggestions",
+                              "Streaming platform links",
+                              "Community ratings and reviews"
+                            ]}
+                            className="mb-4"
+                          >
+                            <div className="p-4">
+                              <div className="space-y-2">
+                                {Array.from({ length: 5 }, (_, i) => (
+                                  <div key={i} className="bg-slate-700 h-4 rounded animate-pulse"></div>
+                                ))}
+                              </div>
+                            </div>
+                          </Paywall>
+                        ) : (
+                          <button
+                            onClick={() => setSelectedGuide(guide)}
+                            className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+                          >
+                            View Guide
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

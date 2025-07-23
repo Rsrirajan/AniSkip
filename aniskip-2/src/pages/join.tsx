@@ -68,6 +68,7 @@ const JoinPage: React.FC = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
+        redirectTo: `${window.location.origin}/dashboard`,
         queryParams: {
           prompt: 'select_account',
         }
@@ -134,7 +135,7 @@ const JoinPage: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#f6f8fb]">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center">
           <div className="w-20 h-20 rounded-full bg-[#232b42] flex items-center justify-center mb-6">
-            <span className="text-2xl font-bold text-white">AnimeSkip Pro</span>
+            <span className="text-2xl font-bold text-white">AniSkip Pro</span>
           </div>
           <h1 className="text-2xl font-extrabold text-[#181f32] mb-1 text-center">Signed in as</h1>
           <div className="text-[#6b7280] mb-6 text-center">{user.email}</div>
@@ -151,9 +152,9 @@ const JoinPage: React.FC = () => {
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center">
         {/* Logo */}
         <div className="w-20 h-20 rounded-full bg-[#232b42] flex items-center justify-center mb-6">
-          <span className="text-2xl font-bold text-white">AnimeSkip Pro</span>
+          <span className="text-2xl font-bold text-white">AniSkip Pro</span>
         </div>
-        <h1 className="text-2xl font-extrabold text-[#181f32] mb-1 text-center">Welcome to AnimeSkip Pro</h1>
+        <h1 className="text-2xl font-extrabold text-[#181f32] mb-1 text-center">Welcome to AniSkip Pro</h1>
         <div className="text-[#6b7280] mb-6 text-center">Sign in to continue</div>
         <button onClick={handleGoogleSignIn} className="w-full flex items-center justify-center gap-2 border border-[#e5e7eb] rounded-lg py-2 mb-4 font-semibold text-[#232b42] hover:bg-[#f1f3f7] transition">
           <GoogleIcon /> Continue with Google

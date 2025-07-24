@@ -1,6 +1,6 @@
-import { getAllAnimeEpisodes, getAnimeById } from './jikan';
-import { POPULAR_ANIME_DATABASE, FRANCHISE_GUIDES, getFranchiseGuide, getAnimesByFranchise } from '../data/popularAnime';
-import { WatchGuide, EpisodeRecommendation } from './watchGuideService';
+import { getAnimeById } from './jikan';
+import { POPULAR_ANIME_DATABASE, getAnimesByFranchise } from '../data/popularAnime';
+import { EpisodeRecommendation } from './watchGuideService';
 
 export interface FranchiseWatchGuide {
   franchiseName: string;
@@ -217,10 +217,9 @@ const generateEpisodeRecommendations = (animeTitle: string, episodeCount: number
 
 export const generateFranchiseWatchGuide = async (franchiseName: string): Promise<FranchiseWatchGuide | null> => {
   try {
-    const franchiseData = getFranchiseGuide(franchiseName);
     const franchiseAnimes = getAnimesByFranchise(franchiseName);
     
-    if (!franchiseData || franchiseAnimes.length === 0) {
+    if (franchiseAnimes.length === 0) {
       return null;
     }
 
@@ -309,12 +308,12 @@ export const generateFranchiseWatchGuide = async (franchiseName: string): Promis
       }
     }
 
-    const instructions = FRANCHISE_WATCH_INSTRUCTIONS[franchiseName];
+    const instructions = FRANCHISE_WATCH_INSTRUCTIONS[franchiseName as keyof typeof FRANCHISE_WATCH_INSTRUCTIONS];
 
     return {
       franchiseName,
-      description: instructions?.description || franchiseData.description,
-      watchOrder: instructions?.watchOrder || franchiseData.recommendedOrder,
+      description: instructions?.description || `Complete ${franchiseName} anime series watch guide`,
+      watchOrder: instructions?.watchOrder || [],
       totalAnimeEntries: animeGuides.length,
       totalEpisodes,
       combinedStats,

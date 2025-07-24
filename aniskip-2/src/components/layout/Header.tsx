@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import Gear5LuffyAvatar from '../../assets/gear5-luffy-avatar.svg';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -21,8 +21,12 @@ const Header: React.FC = () => {
           <>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="text-slate-300 hover:text-white p-2 rounded-lg transition-colors">
-                  <User className="w-5 h-5" />
+                <button className="text-slate-300 hover:text-white p-1 rounded-lg transition-colors">
+                  <img 
+                    src={Gear5LuffyAvatar} 
+                    alt="Profile" 
+                    className="w-8 h-8 rounded-full border-2 border-purple-400 hover:border-purple-300 transition-colors"
+                  />
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content 

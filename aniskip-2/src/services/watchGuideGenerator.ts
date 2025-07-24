@@ -28,7 +28,6 @@ export interface WatchGuide {
 
 const getEpisodeRecommendation = (
   episode: any,
-  animeTitle: string,
   episodeNumber: number
 ): EpisodeRecommendation => {
   const title = episode.title || `Episode ${episodeNumber}`;
@@ -42,16 +41,13 @@ const getEpisodeRecommendation = (
 
   let recommendation: 'watch' | 'skip' | 'optional' | 'recommended' = 'watch';
   let reason = '';
-  let timeSaved = 0;
 
   if (isRecap) {
     recommendation = 'skip';
     reason = 'Recap episode - skip unless you need a refresher.';
-    timeSaved = 24;
   } else if (isFiller) {
     recommendation = 'skip';
     reason = 'Standard filler episode - safe to skip.';
-    timeSaved = 24;
   }
 
   return {
@@ -75,7 +71,7 @@ export const generateWatchGuide = async (malId: number): Promise<WatchGuide> => 
     }
 
     const recommendations = episodes.map((episode) =>
-      getEpisodeRecommendation(episode, animeTitle, episode.mal_id || 0)
+      getEpisodeRecommendation(episode, episode.mal_id || 0)
     );
 
     const stats = {
@@ -84,7 +80,7 @@ export const generateWatchGuide = async (malId: number): Promise<WatchGuide> => 
       fillerEpisodes: recommendations.filter((ep) => ep.type === 'filler').length,
       recapEpisodes: recommendations.filter((ep) => ep.type === 'recap').length,
       mixedEpisodes: recommendations.filter((ep) => ep.type === 'mixed').length,
-      timeSaved: recommendations.reduce((total, ep) => total + (ep.type === 'skip' ? 24 : 0), 0),
+      timeSaved: recommendations.reduce((total, ep) => total + (ep.recommendation === 'skip' ? 24 : 0), 0),
       watchTime: recommendations
         .filter((ep) => ep.recommendation === 'watch' || ep.recommendation === 'recommended')
         .length * 24,

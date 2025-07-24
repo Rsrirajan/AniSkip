@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import {
   Play,
   BarChart3,
@@ -24,7 +24,6 @@ const navigationItems = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   useEnsureProfile();
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Session timeout on tab inactivity (2 hours)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -88,15 +87,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="mt-8">
-          <div className="bg-slate-800/60 rounded-xl p-4 flex flex-col gap-2 items-center">
-            <div className="text-yellow-300 font-bold mb-1">Upgrade to Pro</div>
-            <div className="text-slate-400 text-xs mb-2 text-center">Get unlimited tracking, skip summaries, and premium insights</div>
-            <button
-              onClick={() => navigate('/plans')}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg py-2 font-bold text-sm shadow-lg hover:from-purple-600 hover:to-blue-600 transition mb-2"
-            >
-              Upgrade Now
-            </button>
+          <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/30 rounded-xl p-4 flex flex-col gap-2 items-center">
+            <div className="text-green-300 font-bold mb-1">🎉 All Features Free!</div>
+            <div className="text-slate-300 text-xs mb-2 text-center">Enjoy unlimited tracking, episode guides, and all premium features at no cost</div>
+            <div className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg py-2 font-bold text-sm text-center">
+              Everything Included
+            </div>
           </div>
         </div>
       </div>

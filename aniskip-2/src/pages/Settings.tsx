@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { motion } from "framer-motion";
-import { Settings as SettingsIcon } from "lucide-react";
-import { Crown, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Settings as SettingsIcon, Crown } from "lucide-react";
 
 const themes = ["Auto", "Light", "Dark"];
 const timeZones = ["UTC", "Central Time", "Eastern Time", "Pacific Time"];
 
 const Settings: React.FC = () => {
-  const navigate = useNavigate();
   const [, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -24,7 +21,6 @@ const Settings: React.FC = () => {
   const [timeZone, setTimeZone] = useState("UTC");
   const [notifications, setNotifications] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
-  const [plan, setPlan] = useState("free");
 
   // Add new state for NSFW toggle
   const [showNsfw, setShowNsfw] = useState(false);
@@ -59,7 +55,6 @@ const Settings: React.FC = () => {
       setTimeZone(data.time_zone || "UTC");
       setNotifications(data.notifications_enabled || false);
       setCreatedAt(data.created_at ? new Date(data.created_at).toLocaleDateString() : "");
-      setPlan(data.plan || "free");
       setShowNsfw(data.show_nsfw || false);
       setNewEpisodeNotifications(data.new_episode_notifications || false);
       setLoading(false);
@@ -94,30 +89,6 @@ const Settings: React.FC = () => {
       console.error(error);
     } else {
       setSuccess("Settings saved!");
-    }
-    setSaving(false);
-  };
-
-  const handleUpgradeToPro = async () => {
-    setSaving(true);
-    setError(null);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setError("Not logged in");
-      setSaving(false);
-      return;
-    }
-    const { error } = await supabase
-      .from("profiles")
-      .update({ plan: 'pro' })
-      .eq("id", user.id);
-    if (error) {
-      setError("Failed to upgrade to Pro");
-      console.error(error);
-    } else {
-      setSuccess("Successfully upgraded to Pro!");
-      // Refresh the page to update the UI
-      window.location.reload();
     }
     setSaving(false);
   };

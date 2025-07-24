@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Anime, getTrendingAnime, getSeasonalAnime, getPopularAnime, getCurrentSeason, clearApiCache } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
 import { useWatchlist } from "../lib/useWatchlist";
-import { useUserPlan } from "../lib/useUserPlan";
 import AnimeModal from "../components/AnimeModal";
 import AnimeCard from "../components/AnimeCard";
 
@@ -26,7 +25,6 @@ const Landing: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { trackedMap, userId, updateTrackedAnime } = useWatchlist();
   const [user, setUser] = useState<any>(null);
-  const { plan, loading: planLoading } = useUserPlan();
   const [animeCount, setAnimeCount] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilter, setShowFilter] = useState(false);
@@ -35,7 +33,13 @@ const Landing: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      if (user) {
+        navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      } else {
+        // Store search query for after signup
+        localStorage.setItem('pendingSearch', searchQuery.trim());
+        navigate('/signup');
+      }
     }
   };
 
@@ -147,8 +151,6 @@ const Landing: React.FC = () => {
     setShowAnimeModal(false);
     setSelectedAnime(null);
   };
-
-  if (planLoading) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -466,7 +468,6 @@ const Landing: React.FC = () => {
             }}
             onTrackAnime={handleTrackAnime}
             trackedAnime={trackedMap[selectedAnime.id.toString()]}
-            isProUser={plan === 'pro'}
             userId={userId}
             showSignInPrompt={true}
           />

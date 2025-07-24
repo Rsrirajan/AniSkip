@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import NotificationBanner from "./NotificationBanner";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -20,14 +19,16 @@ const Header: React.FC = () => {
       <div className="flex items-center gap-4">
         {user ? (
           <>
-            <NotificationBanner />
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button className="text-slate-300 hover:text-white p-2 rounded-lg transition-colors">
                   <User className="w-5 h-5" />
                 </button>
               </DropdownMenu.Trigger>
-              <DropdownMenu.Content className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg py-2 mt-2 min-w-[140px]">
+              <DropdownMenu.Content 
+                className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg py-2 mt-2 min-w-[140px] max-h-48 overflow-y-auto"
+                sideOffset={5}
+              >
                 <DropdownMenu.Item onSelect={async () => { await supabase.auth.signOut(); navigate('/'); }} className="px-4 py-2 text-white hover:bg-purple-600 cursor-pointer">Sign out</DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Root>

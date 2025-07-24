@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Crown, Lock, Search, Loader2 } from "lucide-react";
+import { Star, Clock, SkipForward, Crown, Search, Loader2 } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchGuide } from "../lib/useWatchGuide";
 import { WatchGuide } from "../services/watchGuideService";
-import { useNavigate } from "react-router-dom";
-import Paywall from "../components/ui/Paywall";
 
 const WatchGuides: React.FC = () => {
-  const { plan, loading: planLoading } = useUserPlan();
+  const { loading: planLoading } = useUserPlan();
   const [selectedGuide, setSelectedGuide] = useState<WatchGuide | null>(null);
   const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { guides, franchiseGuides, loading, error, searchGuides, loadPopularGuides, clearError } = useWatchGuide();
-  const navigate = useNavigate();
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
@@ -26,10 +23,6 @@ const WatchGuides: React.FC = () => {
   const handleClearSearch = () => {
     setSearchQuery("");
     loadPopularGuides();
-  };
-
-  const handleUpgradeToPro = () => {
-    navigate('/plans');
   };
 
   if (planLoading) {
@@ -190,35 +183,20 @@ const WatchGuides: React.FC = () => {
                           </div>
                         </div>
 
-                        {franchiseGuide.proOnly && plan !== 'pro' ? (
-                          <Paywall
-                            title="Complete Franchise Guide"
-                            description="Get the complete watch order and episode breakdowns"
-                            features={[
-                              "Complete franchise watch order",
-                              "Episode-by-episode recommendations for all series",
-                              "Special viewing instructions (like Danganronpa's alternating order)",
-                              "Combined statistics across all series",
-                              "Optimal time-saving strategies"
-                            ]}
-                            className="mb-4"
-                          >
-                            <div className="p-4">
-                              <div className="space-y-2">
-                                {Array.from({ length: 3 }, (_, i) => (
-                                  <div key={i} className="bg-slate-700 h-4 rounded animate-pulse"></div>
-                                ))}
-                              </div>
-                            </div>
-                          </Paywall>
-                        ) : (
-                          <button
-                            onClick={() => setSelectedFranchiseGuide(franchiseGuide)}
-                            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
-                          >
-                            View Complete Guide
-                          </button>
-                        )}
+                        {/* Free access banner */}
+                        <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/30 rounded-lg p-3 mb-4">
+                          <div className="text-center">
+                            <Star className="w-5 h-5 text-green-400 mx-auto mb-1" />
+                            <span className="text-green-300 font-medium text-sm">✨ Free Access - No Premium Required!</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setSelectedFranchiseGuide(franchiseGuide)}
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                        >
+                          View Complete Guide
+                        </button>
                       </div>
                     </motion.div>
                   ))}
@@ -240,13 +218,10 @@ const WatchGuides: React.FC = () => {
                       className="glass-effect border-slate-700 rounded-lg overflow-hidden"
                     >
                       <div className="relative">
-                        
-                        {guide.proOnly && (
-                          <div className="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                            <Crown className="w-4 h-4" />
-                            Pro Only
-                          </div>
-                        )}
+                        <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                          <Star className="w-4 h-4" />
+                          Free for All
+                        </div>
                       </div>
                       
                       <div className="p-6">
@@ -284,35 +259,20 @@ const WatchGuides: React.FC = () => {
                           </div>
                         </div>
 
-                        {guide.proOnly && plan !== 'pro' ? (
-                          <Paywall
-                            title="Smart Watch Guide"
-                            description="Get detailed episode-by-episode recommendations"
-                            features={[
-                              "Episode-by-episode recommendations",
-                              "Time-saving insights",
-                              "Skip vs Watch suggestions",
-                              "Streaming platform links",
-                              "Community ratings and reviews"
-                            ]}
-                            className="mb-4"
-                          >
-                            <div className="p-4">
-                              <div className="space-y-2">
-                                {Array.from({ length: 5 }, (_, i) => (
-                                  <div key={i} className="bg-slate-700 h-4 rounded animate-pulse"></div>
-                                ))}
-                              </div>
-                            </div>
-                          </Paywall>
-                        ) : (
-                          <button
-                            onClick={() => setSelectedGuide(guide)}
-                            className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
-                          >
-                            View Guide
-                          </button>
-                        )}
+                        {/* Free access banner */}
+                        <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/30 rounded-lg p-3 mb-4">
+                          <div className="text-center">
+                            <Star className="w-5 h-5 text-green-400 mx-auto mb-1" />
+                            <span className="text-green-300 font-medium text-sm">✨ Smart Watch Guide - Free for Everyone!</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setSelectedGuide(guide)}
+                          className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+                        >
+                          View Guide
+                        </button>
                       </div>
                     </motion.div>
                   ))}
@@ -320,6 +280,102 @@ const WatchGuides: React.FC = () => {
               </div>
             )}
           </div>
+        )}
+
+        {/* Franchise Guide Modal */}
+        {selectedFranchiseGuide && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedFranchiseGuide(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-2">{selectedFranchiseGuide.franchiseName} Franchise Guide</h2>
+                  <p className="text-slate-300">{selectedFranchiseGuide.description}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedFranchiseGuide(null)}
+                  className="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/50 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-white font-semibold mb-2">Total Episodes</h3>
+                  <p className="text-slate-300">{selectedFranchiseGuide.totalEpisodes}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-white font-semibold mb-2">Series Count</h3>
+                  <p className="text-slate-300">{selectedFranchiseGuide.totalAnimeEntries}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-white font-semibold mb-2">Time Saved</h3>
+                  <p className="text-slate-300">{Math.round(selectedFranchiseGuide.combinedStats.timeSaved / 60)}h</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-white font-semibold mb-2">Complexity</h3>
+                  <p className="text-slate-300">Multi-Series</p>
+                </div>
+              </div>
+
+              {/* Combined Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-4">
+                  <div className="text-green-400 font-bold text-2xl">{selectedFranchiseGuide.combinedStats.canonEpisodes}</div>
+                  <div className="text-slate-300 text-sm">Canon</div>
+                </div>
+                <div className="bg-red-900/20 border border-red-700/30 rounded-lg p-4">
+                  <div className="text-red-400 font-bold text-2xl">{selectedFranchiseGuide.combinedStats.fillerEpisodes}</div>
+                  <div className="text-slate-300 text-sm">Filler</div>
+                </div>
+                <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-4">
+                  <div className="text-yellow-400 font-bold text-2xl">{selectedFranchiseGuide.combinedStats.recapEpisodes}</div>
+                  <div className="text-slate-300 text-sm">Recap</div>
+                </div>
+                <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-4">
+                  <div className="text-blue-400 font-bold text-2xl">{selectedFranchiseGuide.combinedStats.mixedEpisodes || 0}</div>
+                  <div className="text-slate-300 text-sm">Mixed</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Franchise Watch Order</h3>
+                <div className="space-y-4">
+                  {selectedFranchiseGuide.guides && selectedFranchiseGuide.guides.map((guide: any, index: number) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-lg border border-slate-700 bg-slate-800/30"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-1">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-white font-medium mb-1">{guide.title}</h4>
+                          <p className="text-slate-300 text-sm mb-2">{guide.description}</p>
+                          <div className="flex items-center gap-4 text-xs text-slate-400">
+                            <span>Episodes: {guide.totalEpisodes}</span>
+                            <span>Canon: {guide.stats.canonEpisodes}</span>
+                            <span>Filler: {guide.stats.fillerEpisodes}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
 
         {/* Guide Modal */}

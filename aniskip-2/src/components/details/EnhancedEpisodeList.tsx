@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { Anime } from '../../services/anilist';
-import { useUserPlan } from '../../lib/useUserPlan';
-import { Lock, Play, SkipForward, Clock, Award } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Play, SkipForward, Clock, Award } from 'lucide-react';
 
 interface EpisodeListProps {
   anime: Anime;
@@ -81,7 +79,7 @@ const getEpisodeColor = (type: string, recommendation: string) => {
   return 'bg-gray-600 text-gray-200';
 };
 
-const getEpisodeIcon = (type: string, recommendation: string) => {
+const getEpisodeIcon = (recommendation: string) => {
   if (recommendation === 'recommended') return <Award className="w-3 h-3" />;
   if (recommendation === 'skip') return <SkipForward className="w-3 h-3" />;
   if (recommendation === 'optional') return <Clock className="w-3 h-3" />;
@@ -93,10 +91,6 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
   const [loading, setLoading] = useState(true);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-  const { plan } = useUserPlan();
-  const navigate = useNavigate();
-  
-  const isPro = true; // All features are now free
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -139,10 +133,6 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
     }
   };
 
-  const handleUpgrade = () => {
-    navigate('/premium');
-  };
-
   if (loading) {
     return <div className="text-white">Loading episodes...</div>;
   }
@@ -167,7 +157,7 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
         </div>
       </div>
 
-      {/* Episode Type Legend - Available to all users */}
+      {/* Episode Type Legend */}
       <div className="mb-4 p-4 bg-gray-800/50 rounded-lg">
         <h3 className="text-sm font-semibold text-white mb-2">Episode Types</h3>
         <div className="flex flex-wrap gap-2 text-xs">
@@ -183,43 +173,39 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
             <div className="w-3 h-3 bg-red-600/60 rounded"></div>
             <span className="text-red-200">Recap</span>
           </div>
-          {isPro && (
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-purple-600 rounded border border-purple-400"></div>
-              <span className="text-purple-200">Recommended</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 bg-purple-600 rounded border border-purple-400"></div>
+            <span className="text-purple-200">Recommended</span>
+          </div>
         </div>
       </div>
 
-      {/* Pro Stats */}
-      {isPro && (
-        <div className="mb-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-lg border border-purple-500/20">
-          <h3 className="text-sm font-semibold text-white mb-2">Smart Watch Guide Stats</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs">
-            <div className="text-center">
-              <div className="text-lg font-bold text-white">{stats.total}</div>
-              <div className="text-gray-400">Total Episodes</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-400">{stats.canon}</div>
-              <div className="text-gray-400">Canon</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-yellow-400">{stats.filler}</div>
-              <div className="text-gray-400">Filler</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-red-400">{stats.recap}</div>
-              <div className="text-gray-400">Recap</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-green-400">{Math.round(stats.timeSaved / 60)}h</div>
-              <div className="text-gray-400">Time Saved</div>
-            </div>
+      {/* Smart Watch Guide Stats */}
+      <div className="mb-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-lg border border-purple-500/20">
+        <h3 className="text-sm font-semibold text-white mb-2">Smart Watch Guide Stats</h3>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs">
+          <div className="text-center">
+            <div className="text-lg font-bold text-white">{stats.total}</div>
+            <div className="text-gray-400">Total Episodes</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-blue-400">{stats.canon}</div>
+            <div className="text-gray-400">Canon</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-yellow-400">{stats.filler}</div>
+            <div className="text-gray-400">Filler</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-red-400">{stats.recap}</div>
+            <div className="text-gray-400">Recap</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-green-400">{Math.round(stats.timeSaved / 60)}h</div>
+            <div className="text-gray-400">Time Saved</div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Episodes Grid */}
       <div className="grid grid-cols-5 md:grid-cols-10 gap-2 mb-6">
@@ -236,26 +222,15 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
             onMouseLeave={() => setSelectedEpisode(null)}
           >
             <div className="flex items-center justify-center gap-1">
-              {isPro && getEpisodeIcon(episode.type, episode.recommendation)}
+              {getEpisodeIcon(episode.recommendation)}
               <span className="text-sm font-medium">{episode.number}</span>
             </div>
-            
-            {/* Pro-only episode type indicator */}
-            {!isPro && (
-              <div className="absolute -top-1 -right-1">
-                <div className={`w-2 h-2 rounded-full ${
-                  episode.type === 'canon' ? 'bg-blue-500' :
-                  episode.type === 'filler' ? 'bg-yellow-500' :
-                  'bg-red-500'
-                }`}></div>
-              </div>
-            )}
           </div>
         ))}
       </div>
 
       {/* Episode Details Tooltip/Panel */}
-      {selectedEpisode && isPro && (
+      {selectedEpisode && (
         <div className="fixed bottom-4 left-4 right-4 md:relative md:bottom-auto md:left-auto md:right-auto bg-gray-900 border border-gray-700 rounded-lg p-4 shadow-lg z-50">
           <div className="flex justify-between items-start mb-2">
             <h4 className="font-semibold text-white">Episode {selectedEpisode.number}</h4>
@@ -278,7 +253,7 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
             </div>
           )}
           
-          {/* Streaming Links for Pro Users */}
+          {/* Streaming Links */}
           {selectedEpisode.streamingLinks && (
             <div className="flex flex-wrap gap-2">
               <span className="text-gray-400 text-sm">Watch on:</span>
@@ -295,32 +270,6 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Free User Episode Info */}
-      {selectedEpisode && !isPro && (
-        <div className="mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="font-semibold text-white">Episode {selectedEpisode.number}</h4>
-            <div className="flex items-center gap-2">
-              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                selectedEpisode.type === 'canon' ? 'bg-blue-600 text-white' :
-                selectedEpisode.type === 'filler' ? 'bg-yellow-600 text-white' :
-                'bg-red-600 text-white'
-              }`}>
-                {selectedEpisode.type.toUpperCase()}
-              </span>
-              <button
-                onClick={handleUpgrade}
-                className="flex items-center gap-1 text-purple-400 hover:text-purple-300 text-xs"
-              >
-                <Lock className="w-3 h-3" />
-                Unlock Smart Guides
-              </button>
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm">Upgrade to Pro to see detailed recommendations, streaming links, and time-saving insights!</p>
         </div>
       )}
     </div>

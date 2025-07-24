@@ -81,7 +81,7 @@ const getEpisodeColor = (type: string, recommendation: string) => {
   return 'bg-gray-600 text-gray-200';
 };
 
-const getEpisodeIcon = (type: string, recommendation: string) => {
+const getEpisodeIcon = (recommendation: string) => {
   if (recommendation === 'recommended') return <Award className="w-3 h-3" />;
   if (recommendation === 'skip') return <SkipForward className="w-3 h-3" />;
   if (recommendation === 'optional') return <Clock className="w-3 h-3" />;
@@ -93,7 +93,7 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
   const [loading, setLoading] = useState(true);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-  const { plan } = useUserPlan();
+  useUserPlan();
   const navigate = useNavigate();
   
   const isPro = true; // All features are now free
@@ -236,7 +236,7 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
             onMouseLeave={() => setSelectedEpisode(null)}
           >
             <div className="flex items-center justify-center gap-1">
-              {isPro && getEpisodeIcon(episode.type, episode.recommendation)}
+              {isPro && getEpisodeIcon(episode.recommendation)}
               <span className="text-sm font-medium">{episode.number}</span>
             </div>
             

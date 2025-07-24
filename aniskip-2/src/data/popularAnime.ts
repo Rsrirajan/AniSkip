@@ -80,9 +80,64 @@ export const POPULAR_ANIME_DATABASE: PopularAnime[] = [
   { name: "Fate/Grand Order - Absolute Demonic Front: Babylonia", malId: 38084, estimatedFillers: 0, fillerRanges: [], franchise: "Fate", watchOrder: 7 },
 ];
 
-// Only export One Piece and Black Clover franchise guides for launch
 export const FRANCHISE_GUIDES: FranchiseGuide[] = [
-  // One Piece and Black Clover franchise guides go here
+  {
+    name: "Naruto",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Naruto"),
+    description: "The complete Naruto franchise watch guide with optimal viewing order and filler information.",
+    recommendedOrder: [
+      "Naruto (Skip most fillers except favorites)",
+      "Naruto: Shippuden (Skip major filler arcs)",
+      "Boruto: Naruto Next Generations (Optional, skip most fillers)"
+    ]
+  },
+  {
+    name: "Dragon Ball",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Dragon Ball"),
+    description: "Complete Dragon Ball series watch guide for optimal story experience.",
+    recommendedOrder: [
+      "Dragon Ball Z (Kai version preferred to skip filler)",
+      "Dragon Ball Super (Watch after Z)"
+    ]
+  },
+  {
+    name: "Yu-Gi-Oh!",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Yu-Gi-Oh!"),
+    description: "Yu-Gi-Oh! franchise guide covering all major series.",
+    recommendedOrder: [
+      "Yu-Gi-Oh! Duel Monsters",
+      "Yu-Gi-Oh! GX",
+      "Yu-Gi-Oh! 5D's",
+      "Yu-Gi-Oh! Zexal"
+    ]
+  },
+  {
+    name: "Hunter x Hunter",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Hunter x Hunter"),
+    description: "Hunter x Hunter versions comparison and watch guide.",
+    recommendedOrder: [
+      "Hunter x Hunter (2011) - Recommended version with superior animation and no filler"
+    ]
+  },
+  {
+    name: "Danganronpa",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Danganronpa"),
+    description: "Danganronpa anime series watch guide. Note: Games provide better experience than anime.",
+    recommendedOrder: [
+      "Danganronpa: The Animation",
+      "Danganronpa 3: Despair Arc & Future Arc (Watch alternating episodes)"
+    ]
+  },
+  {
+    name: "Fate",
+    entries: POPULAR_ANIME_DATABASE.filter(anime => anime.franchise === "Fate"),
+    description: "Comprehensive Fate series watch guide with multiple viewing order options.",
+    recommendedOrder: [
+      "Fate/Zero → Fate/stay night: UBW → Heaven's Feel (Chronological)",
+      "OR Fate/stay night: UBW → Fate/Zero → Heaven's Feel (Release order)",
+      "Fate/Apocrypha, Fate/Extra, and FGO: Babylonia can be watched independently"
+    ]
+  }
 ];
 
 export const getAnimeByMalId = (malId: number): PopularAnime | undefined => {

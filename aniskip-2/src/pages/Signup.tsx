@@ -30,17 +30,17 @@ const Signup: React.FC = () => {
     setError(null);
     setLoading(true);
     if (mode === 'signup') {
-      if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        setLoading(false);
-        return;
-      }
-      if (password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        setLoading(false);
-        return;
-      }
-      try {
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setLoading(false);
+      return;
+    }
+    try {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) setError(error.message);
         else setSuccess(true);
@@ -54,10 +54,10 @@ const Signup: React.FC = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) setError(error.message);
         else setSuccess(true);
-      } catch (error) {
-        setError("An unexpected error occurred");
-      } finally {
-        setLoading(false);
+    } catch (error) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
       }
     }
   };
@@ -212,20 +212,20 @@ const Signup: React.FC = () => {
             />
           </div>
           {mode === 'signup' && (
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Confirm Password"
-              />
-            </div>
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Confirm Password"
+            />
+          </div>
           )}
           <button
             type="submit"
@@ -253,7 +253,7 @@ const Signup: React.FC = () => {
             </form>
             {forgotMsg && <div className="text-sm mt-2 text-center text-green-600">{forgotMsg}</div>}
             <button className="text-xs text-purple-600 mt-2 hover:underline" onClick={() => setShowForgot(false)}>Close</button>
-          </div>
+        </div>
         )}
       </motion.div>
     </div>

@@ -1,32 +1,14 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Crown, Lock, Search, Loader2 } from "lucide-react";
+import { Star, Clock, SkipForward, Crown } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchGuide } from "../lib/useWatchGuide";
 import { WatchGuide } from "../services/watchGuideService";
-import { useNavigate } from "react-router-dom";
-import Paywall from "../components/ui/Paywall";
 
 const WatchGuides: React.FC = () => {
-  const { plan, loading: planLoading } = useUserPlan();
+  const { loading: planLoading } = useUserPlan();
   const [selectedGuide, setSelectedGuide] = useState<WatchGuide | null>(null);
-  const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const { guides, franchiseGuides, loading, error, searchGuides, loadPopularGuides, clearError } = useWatchGuide();
-  const navigate = useNavigate();
-
-  const handleSearch = async () => {
-    if (searchQuery.trim()) {
-      await searchGuides(searchQuery);
-    } else {
-      await loadPopularGuides();
-    }
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    loadPopularGuides();
-  };
+  const { guides, loading, error, clearError } = useWatchGuide();
 
   if (planLoading) {
     return (
@@ -49,43 +31,6 @@ const WatchGuides: React.FC = () => {
             Expert-curated guides to help you watch anime efficiently and get the most out of your viewing experience.
           </p>
 
-          {/* Search Bar */}
-          <div className="flex gap-4 mb-8">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Search for anime watch guides..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-purple-500"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-            </div>
-            <button
-              onClick={handleSearch}
-              disabled={loading}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                'Search'
-              )}
-            </button>
-            {searchQuery && (
-              <button
-                onClick={handleClearSearch}
-                className="bg-slate-700 text-white px-4 py-3 rounded-lg font-semibold hover:bg-slate-600 transition-all duration-200"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
           {/* Error Display */}
           {error && (
             <div className="bg-red-900/20 border border-red-700/50 rounded-lg p-4 mb-6">
@@ -105,127 +50,29 @@ const WatchGuides: React.FC = () => {
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
-              <Loader2 className="w-12 h-12 text-purple-400 animate-spin mx-auto mb-4" />
+              <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
               <p className="text-slate-300">Loading watch guides...</p>
               <p className="text-slate-400 text-sm mt-2">This may take a few moments as we fetch episode data</p>
             </div>
           </div>
-        ) : guides.length === 0 && franchiseGuides.length === 0 ? (
+        ) : guides.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-slate-400 mb-4">
-              <Search className="w-16 h-16 mx-auto" />
+              <Star className="w-16 h-16 mx-auto" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">
-              {searchQuery ? 'No watch guides found' : 'No watch guides available'}
+              No watch guides available
             </h3>
             <p className="text-slate-400">
-              {searchQuery 
-                ? 'Try searching for a different anime or check the spelling.'
-                : 'Watch guides will be available here once loaded.'
-              }
+              Watch guides will be available here once loaded.
             </p>
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Franchise Guides */}
-            {franchiseGuides.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-6">📺 Franchise Watch Guides</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {franchiseGuides.map((franchiseGuide, index) => (
-                    <motion.div
-                      key={franchiseGuide.franchiseName}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="glass-effect border-slate-700 rounded-lg overflow-hidden"
-                    >
-                      <div className="relative">
-                        <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                          <Crown className="w-4 h-4" />
-                          Franchise Guide
-                        </div>
-                      </div>
-                      
-                      <div className="p-6">
-                        <h2 className="text-xl font-bold text-white mb-2">{franchiseGuide.franchiseName} Series</h2>
-                        <p className="text-slate-300 text-sm mb-4 line-clamp-2">{franchiseGuide.description}</p>
-                        
-                        <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                          <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {franchiseGuide.totalEpisodes} episodes
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4" />
-                            {franchiseGuide.totalAnimeEntries} series
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <SkipForward className="w-4 h-4" />
-                            Save {Math.round(franchiseGuide.combinedStats.timeSaved / 60)}h
-                          </div>
-                        </div>
-
-                        {/* Combined Stats Overview */}
-                        <div className="grid grid-cols-4 gap-2 mb-4 text-xs">
-                          <div className="bg-slate-800/50 rounded p-2 text-center">
-                            <div className="text-white font-semibold">{franchiseGuide.totalEpisodes}</div>
-                            <div className="text-slate-400">Total</div>
-                          </div>
-                          <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
-                            <div className="text-green-400 font-semibold">{franchiseGuide.combinedStats.canonEpisodes}</div>
-                            <div className="text-slate-400">Canon</div>
-                          </div>
-                          <div className="bg-red-900/20 border border-red-700/30 rounded p-2 text-center">
-                            <div className="text-red-400 font-semibold">{franchiseGuide.combinedStats.fillerEpisodes}</div>
-                            <div className="text-slate-400">Filler</div>
-                          </div>
-                          <div className="bg-yellow-900/20 border border-yellow-700/30 rounded p-2 text-center">
-                            <div className="text-yellow-400 font-semibold">{franchiseGuide.combinedStats.recapEpisodes}</div>
-                            <div className="text-slate-400">Recap</div>
-                          </div>
-                        </div>
-
-                        {franchiseGuide.proOnly && plan !== 'pro' ? (
-                          <Paywall
-                            title="Complete Franchise Guide"
-                            description="Get the complete watch order and episode breakdowns"
-                            features={[
-                              "Complete franchise watch order",
-                              "Episode-by-episode recommendations for all series",
-                              "Special viewing instructions (like Danganronpa's alternating order)",
-                              "Combined statistics across all series",
-                              "Optimal time-saving strategies"
-                            ]}
-                            className="mb-4"
-                          >
-                            <div className="p-4">
-                              <div className="space-y-2">
-                                {Array.from({ length: 3 }, (_, i) => (
-                                  <div key={i} className="bg-slate-700 h-4 rounded animate-pulse"></div>
-                                ))}
-                              </div>
-                            </div>
-                          </Paywall>
-                        ) : (
-                          <button
-                            onClick={() => setSelectedFranchiseGuide(franchiseGuide)}
-                            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
-                          >
-                            View Complete Guide
-                          </button>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Individual Guides */}
             {guides.length > 0 && (
               <div>
-                <h2 className="text-2xl font-bold text-white mb-6">🎌 Individual Anime Guides</h2>
+                <h2 className="text-2xl font-bold text-white mb-6">🎌 Anime Watch Guides</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {guides.map((guide, index) => (
                     <motion.div
@@ -284,7 +131,7 @@ const WatchGuides: React.FC = () => {
                           onClick={() => setSelectedGuide(guide)}
                           className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-blue-600 transition-all duration-200"
                         >
-                          View Guide <span className="ml-2 px-2 py-0.5 bg-green-700/40 text-green-200 text-xs rounded font-semibold"></span>
+                          View Guide
                         </button>
                       </div>
                     </motion.div>

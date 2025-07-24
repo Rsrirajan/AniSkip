@@ -34,5 +34,5 @@ export function useUserPlan() {
     return () => { mounted = false; };
   }, []);
 
-  return { plan, showNsfw, loading };
-} 
+  return { plan: 'free', showNsfw, loading };
+}

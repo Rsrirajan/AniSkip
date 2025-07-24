@@ -86,19 +86,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
         </nav>
-
-        <div className="mt-8">
-          <div className="bg-slate-800/60 rounded-xl p-4 flex flex-col gap-2 items-center">
-            <div className="text-yellow-300 font-bold mb-1">Upgrade to Pro</div>
-            <div className="text-slate-400 text-xs mb-2 text-center">Get unlimited tracking, skip summaries, and premium insights</div>
-            <button
-              onClick={() => navigate('/plans')}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg py-2 font-bold text-sm shadow-lg hover:from-purple-600 hover:to-blue-600 transition mb-2"
-            >
-              Upgrade Now
-            </button>
-          </div>
-        </div>
       </div>
 
       <main className="flex-1 flex flex-col">

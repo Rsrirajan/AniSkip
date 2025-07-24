@@ -71,9 +71,6 @@ const Home: React.FC = () => {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <button onClick={() => setShowPremium(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-lg font-semibold shadow hover:scale-105 transition">
-            <Crown className="w-5 h-5" /> Premium
-          </button>
           <button onClick={handleLogin} className="flex items-center gap-2 px-4 py-2 bg-purple-700 text-white rounded-lg font-semibold hover:bg-purple-800 transition">
             <LogIn className="w-5 h-5" /> Login
           </button>
@@ -148,49 +145,6 @@ const Home: React.FC = () => {
           ))}
         </div>
       </section>
-
-      {/* Premium Modal */}
-      <AnimatePresence>
-        {showPremium && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-            onClick={() => setShowPremium(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-8 max-w-2xl w-full shadow-xl border border-white/20 relative"
-              onClick={e => e.stopPropagation()}
-            >
-              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><Crown className="w-6 h-6 text-yellow-400" /> Free vs Pro: Choose Your AniSkip Experience</h2>
-              <table className="w-full text-white mb-4">
-                <thead>
-                  <tr className="text-purple-200 text-left">
-                    <th className="py-2">Feature</th>
-                    <th className="py-2">Free Plan</th>
-                    <th className="py-2">AniSkip Pro</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {freeVsPro.map((row, i) => (
-                    <tr key={i} className="border-t border-white/10">
-                      <td className="py-2">{row.feature}</td>
-                      <td className="py-2 text-center">{row.free ? "✔️" : "❌"}</td>
-                      <td className="py-2 text-center">{row.pro ? "✔️" : "❌"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={() => setShowPremium(false)} className="absolute top-4 right-4 text-purple-200 hover:text-white text-2xl">&times;</button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

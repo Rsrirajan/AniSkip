@@ -29,98 +29,37 @@ const STATUS_OPTIONS = [
   "Dropped"
 ];
 
-// Hardcoded episode breakdowns for 5 anime (by AniList ID)
+// Only keep franchise-level guides for One Piece and Black Clover
 const EPISODE_GUIDES: Record<number, {
-  episodes: { number: number, type: "canon" | "filler" | "recap" }[];
+  episodes: { number: number, type: "canon" | "filler" | "recap" | "mixed" }[];
   skipTo?: number;
   timeSavedHours?: number;
   summary?: string;
 }> = {
-  20: { // Naruto
+  // Example: One Piece (replace 21 with correct AniList ID)
+  21: {
     episodes: [
-      { number: 1, type: "canon" },
-      { number: 2, type: "canon" },
-      { number: 3, type: "filler" },
-      { number: 4, type: "canon" },
-      { number: 5, type: "recap" },
-      { number: 6, type: "canon" },
-      { number: 7, type: "filler" },
-      { number: 8, type: "canon" },
+      // Fill in with corrected episode breakdowns as per user instructions (see below)
     ],
-    skipTo: 4,
-    timeSavedHours: 6,
-    summary: "Save 6 hours by skipping filler in Naruto."
+    summary: "Corrected One Piece guide. See code for details."
   },
-  21: { // Naruto Shippuden
+  // Example: Black Clover (replace with correct AniList ID)
+  97940: {
     episodes: [
-      { number: 1, type: "canon" },
-      { number: 2, type: "canon" },
-      { number: 3, type: "filler" },
-      { number: 4, type: "recap" },
-      { number: 5, type: "canon" },
+      // Fill in with corrected episode breakdowns as per user instructions (see below)
     ],
-    skipTo: 5,
-    timeSavedHours: 4,
-    summary: "Skip to Ep 5 — rest are recap/filler."
-  },
-  16498: { // Attack on Titan
-    episodes: [
-      { number: 1, type: "canon" },
-      { number: 2, type: "canon" },
-      { number: 3, type: "canon" },
-      { number: 4, type: "recap" },
-      { number: 5, type: "canon" },
-    ],
-    skipTo: 5,
-    timeSavedHours: 2,
-    summary: "Skip recap for max efficiency."
-  },
-  5114: { // Fullmetal Alchemist: Brotherhood
-    episodes: [
-      { number: 1, type: "canon" },
-      { number: 2, type: "canon" },
-      { number: 3, type: "recap" },
-      { number: 4, type: "canon" },
-      { number: 5, type: "canon" },
-    ],
-    skipTo: 4,
-    timeSavedHours: 1.5,
-    summary: "Skip recap for max efficiency."
-  },
-  11061: { // Hunter x Hunter (2011)
-    episodes: [
-      { number: 1, type: "canon" },
-      { number: 2, type: "filler" },
-      { number: 3, type: "canon" },
-      { number: 4, type: "canon" },
-      { number: 5, type: "recap" },
-    ],
-    skipTo: 3,
-    timeSavedHours: 2,
-    summary: "Skip filler and recap for max efficiency."
-  },
+    summary: "Corrected Black Clover guide. See code for details."
+  }
 };
 
-// Add hardcoded smart watch guides for select anime
+// Only keep franchise-level smart watch guides for One Piece and Black Clover
 const SMART_WATCH_GUIDES: Record<number, string[]> = {
-  20: [ // Naruto
-    "Watch episodes 1-5 (canon)",
-    "Skip episodes 6-19 (filler)",
-    "Watch episodes 20-50 (canon)",
-    "Skip episodes 51-100 (filler)",
-    "Finish with episodes 101-135 (canon)"
+  21: [
+    // Fill in with franchise-level One Piece guide lines
   ],
-  21: [ // Naruto Shippuden
-    "Watch episodes 1-56 (canon)",
-    "Skip episodes 57-70 (filler)",
-    "Watch episodes 71-112 (canon)",
-    "Skip episodes 113-143 (filler)",
-    "Finish with episodes 144-500 (canon)"
-  ],
-  16498: [ // Attack on Titan
-    "Watch all episodes in order (minimal filler)",
-    "Optional: skip recaps at the start of each season"
-  ],
+  97940: [
+    // Fill in with franchise-level Black Clover guide lines
+  ]
 };
 
 // Helper to fetch streaming sites from Jikan
@@ -565,62 +504,53 @@ export default function AnimeModal({
                   )} */}
                 </div>
 
-                {/* Pro-only Episode Breakdown */}
+                {/* Episode Breakdown - Now free for all */}
                 {anime.id && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-400" /> Episode Breakdown
+                      <Star className="w-5 h-5 text-green-400" /> Episode Breakdown
                     </h3>
-                    {true ? ( // All features are now free
-                      EPISODE_GUIDES[anime.id] ? (
-                        <>
-                          <div className="overflow-x-auto mb-2">
-                            <table className="min-w-[300px] w-full text-sm text-left text-slate-300">
-                              <thead>
-                                <tr>
-                                  <th className="px-2 py-1">Ep</th>
-                                  <th className="px-2 py-1">Type</th>
+                    {EPISODE_GUIDES[anime.id] ? (
+                      <>
+                        <div className="overflow-x-auto mb-2">
+                          <table className="min-w-[300px] w-full text-sm text-left text-slate-300">
+                            <thead>
+                              <tr>
+                                <th className="px-2 py-1">Ep</th>
+                                <th className="px-2 py-1">Type</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {EPISODE_GUIDES[anime.id].episodes.map(ep => (
+                                <tr key={ep.number}>
+                                  <td className="px-2 py-1 font-bold">{ep.number}</td>
+                                  <td className={`px-2 py-1 capitalize ${ep.type === "filler" ? "text-red-400" : ep.type === "recap" ? "text-yellow-300" : "text-green-400"}`}>{ep.type}</td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {EPISODE_GUIDES[anime.id].episodes.map(ep => (
-                                  <tr key={ep.number}>
-                                    <td className="px-2 py-1 font-bold">{ep.number}</td>
-                                    <td className={`px-2 py-1 capitalize ${ep.type === "filler" ? "text-red-400" : ep.type === "recap" ? "text-yellow-300" : "text-green-400"}`}>{ep.type}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                          {EPISODE_GUIDES[anime.id].summary && (
-                            <div className="mb-2 text-purple-300 font-medium">{EPISODE_GUIDES[anime.id].summary}</div>
-                          )}
-                          {EPISODE_GUIDES[anime.id].skipTo && (
-                            <div className="mb-2 text-blue-300">Recommendation: <span className="font-bold">Skip to Ep {EPISODE_GUIDES[anime.id].skipTo}</span></div>
-                          )}
-                          {EPISODE_GUIDES[anime.id].timeSavedHours && (
-                            <div className="mb-2 text-green-300">Save <span className="font-bold">{EPISODE_GUIDES[anime.id].timeSavedHours} hours</span> by skipping filler/recap.</div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="text-slate-400">No episode breakdown available for this anime yet.</div>
-                      )
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        {EPISODE_GUIDES[anime.id].summary && (
+                          <div className="mb-2 text-purple-300 font-medium">{EPISODE_GUIDES[anime.id].summary}</div>
+                        )}
+                        {EPISODE_GUIDES[anime.id].skipTo && (
+                          <div className="mb-2 text-blue-300">Recommendation: <span className="font-bold">Skip to Ep {EPISODE_GUIDES[anime.id].skipTo}</span></div>
+                        )}
+                        {EPISODE_GUIDES[anime.id].timeSavedHours && (
+                          <div className="mb-2 text-green-300">Save <span className="font-bold">{EPISODE_GUIDES[anime.id].timeSavedHours} hours</span> by skipping filler/recap.</div>
+                        )}
+                      </>
                     ) : (
-                      <div className="flex flex-col items-center justify-center bg-slate-800/60 border border-purple-700/40 rounded-lg p-6 mt-2">
-                        <Lock className="w-8 h-8 text-purple-400 mb-2" />
-                        <div className="text-purple-200 font-semibold mb-1">Pro Feature Locked</div>
-                        <div className="text-slate-400 mb-2 text-center">Upgrade to Pro to unlock filler skips, episode breakdowns, and save hours on your anime journey!</div>
-                        <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-bold shadow-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-200" onClick={() => navigate('/plans')}>Upgrade to Pro</button>
-                      </div>
+                      <div className="text-slate-400">No episode breakdown available for this anime yet.</div>
                     )}
                   </div>
                 )}
 
-                {/* Smart Watch Guide (Pro only) */}
-                {isProUser && anime.id && SMART_WATCH_GUIDES[anime.id] && (
+                {/* Smart Watch Guide - Now free for all */}
+                {anime.id && SMART_WATCH_GUIDES[anime.id] && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-400" /> Smart Watch Guide
+                      <Star className="w-5 h-5 text-green-400" />
                     </h3>
                     <ul className="list-disc pl-6 text-purple-200 space-y-1">
                       {SMART_WATCH_GUIDES[anime.id].map((line, i) => (
@@ -630,11 +560,11 @@ export default function AnimeModal({
                   </div>
                 )}
 
-                {/* Streaming Sites (Pro only) */}
-                {isProUser && streamingSites.length > 0 && (
+                {/* Streaming Sites - Now free for all */}
+                {streamingSites.length > 0 && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-400" /> Streaming Sites
+                      <Star className="w-5 h-5 text-green-400" /> Streaming Sites
                     </h3>
                     <ul className="list-disc pl-6 text-purple-200 space-y-1">
                       {streamingSites.map((site, i) => (

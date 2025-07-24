@@ -26,7 +26,7 @@ const Landing: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { trackedMap, userId, updateTrackedAnime } = useWatchlist();
   const [user, setUser] = useState<any>(null);
-  const { plan, loading: planLoading } = useUserPlan();
+  // No premium logic needed for free launch
   const [animeCount, setAnimeCount] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilter, setShowFilter] = useState(false);
@@ -148,7 +148,7 @@ const Landing: React.FC = () => {
     setSelectedAnime(null);
   };
 
-  if (planLoading) return null;
+  // No premium logic needed for free launch
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -425,7 +425,7 @@ const Landing: React.FC = () => {
               )}
               {!user && (
                 <button 
-                  onClick={() => navigate('/join')}
+                  onClick={() => navigate('/signup')}
                   className="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-bold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
                 >
                   Get Started Free
@@ -466,7 +466,7 @@ const Landing: React.FC = () => {
             }}
             onTrackAnime={handleTrackAnime}
             trackedAnime={trackedMap[selectedAnime.id.toString()]}
-            isProUser={plan === 'pro'}
+            isProUser={false} // Always false for free launch
             userId={userId}
             showSignInPrompt={true}
           />

@@ -154,17 +154,6 @@ const Settings: React.FC = () => {
                   <input type="number" value={watchGoal} onChange={e => setWatchGoal(Number(e.target.value))} className="w-full px-4 py-2 rounded-lg bg-slate-900 text-white border border-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500" />
                 </div>
               </div>
-              {/* New Episode Notifications - Now free for all */}
-              <div className="flex items-center gap-3 mt-4">
-                <label className="text-purple-200">New Episode Notifications</label>
-                <input
-                  type="checkbox"
-                  checked={newEpisodeNotifications}
-                  onChange={e => setNewEpisodeNotifications(e.target.checked)}
-                  className="accent-purple-500 w-5 h-5"
-                />
-                <span className="text-xs text-green-400">✨ Free for everyone!</span>
-              </div>
               {/* NSFW Toggle */}
               <div className="flex items-center gap-3 mt-4">
                 <label className="text-purple-200">Show NSFW Titles</label>
@@ -206,28 +195,9 @@ const Settings: React.FC = () => {
           </div>
           {/* Sidebar: Quick Stats */}
           <div className="flex flex-col gap-8">
-            <div className="bg-white/10 rounded-2xl p-8 shadow-xl border border-white/10">
-              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <Crown className="w-5 h-5 text-green-400" /> All Features Free!
-              </h2>
-              <ul className="text-green-200 text-sm mb-4">
-                <li>✅ Unlimited tracking</li>
-                <li>✅ Episode breakdowns</li>
-                <li>✅ Smart watch guides</li>
-                <li>✅ Progress tracking</li>
-                <li>✅ NSFW filtering</li>
-                <li>✅ Episode notifications</li>
-              </ul>
-              <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-3 text-center">
-                <span className="text-green-300 font-medium text-sm">🎉 Everything included at no cost!</span>
-              </div>
-            </div>
+            {/* All features are free, no premium UI needed */}
             
-            <div className="bg-white/10 rounded-2xl p-8 shadow-xl border border-white/10">
-              <h2 className="text-lg font-bold text-white mb-2">Account Info</h2>
-              <div className="text-purple-200 text-sm mb-2">Member since <span className="text-white font-semibold">{createdAt}</span></div>
-              <div className="text-purple-200 text-sm">All features <span className="text-green-400 font-semibold">free</span></div>
-            </div>
+            {/* Account info block remains, but no premium references */}
           </div>
         </motion.div>
 

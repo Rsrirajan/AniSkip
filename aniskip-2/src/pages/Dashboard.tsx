@@ -582,7 +582,7 @@ export default function Dashboard() {
             onClose={() => setModalOpen(false)}
             onTrackAnime={handleTrackAnime}
             trackedAnime={selectedAnime ? trackedMap[selectedAnime.id] : undefined}
-            isProUser={plan === 'pro'}
+            isProUser={true}
             showSignInPrompt={false}
           />
         )}

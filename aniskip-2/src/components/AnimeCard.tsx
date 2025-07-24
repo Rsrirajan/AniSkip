@@ -75,17 +75,6 @@ export default function AnimeCard({
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         />
-        {/* Sign In Button Overlay */}
-        {showSignInButton && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10">
-            <button
-              onClick={handleSignIn}
-              className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200 shadow-lg"
-            >
-              Sign In to Track
-            </button>
-          </div>
-        )}
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         {/* Watchlist Action Button */}

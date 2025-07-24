@@ -5,15 +5,11 @@ import Dashboard from "./pages/Dashboard"
 import Library from "./pages/Library"
 import Search from "./pages/Search"
 import Settings from "./pages/Settings"
-import Subscription from "./pages/Subscription"
 import AnimeDetails from "./pages/AnimeDetails"
 import Landing from "./pages/Landing"
-import PremiumPage from "./pages/premium"
-import SubscriptionPage from "./pages/Subscription"
 import JoinPage from "./pages/join"
 import Signup from "./pages/Signup"
 import WatchGuides from "./pages/WatchGuides"
-import PlansPage from "./pages/premium";
 import { supabase } from "./lib/supabaseClient"
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -52,9 +48,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<RedirectIfAuth><Landing /></RedirectIfAuth>} />
-        <Route path="/premium" element={<PremiumPage />} />
-        <Route path="/subscription" element={<SubscriptionPage />} />
-        <Route path="/plans" element={<PlansPage />} />
         <Route path="/join" element={<RedirectIfAuth><JoinPage /></RedirectIfAuth>} />
         <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
         <Route
@@ -68,7 +61,6 @@ function App() {
                   <Route path="search" element={<Search />} />
                   <Route path="watch-guides" element={<WatchGuides />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="subscription" element={<Subscription />} />
                   <Route path="anime/:id" element={<AnimeDetails />} />
                 </Routes>
               </Layout>

@@ -1,5 +1,5 @@
 import { getAllAnimeEpisodes, getAnimeById } from './jikan';
-import { POPULAR_ANIME_DATABASE, FRANCHISE_GUIDES, getAnimeByMalId, getFranchiseGuide } from '../data/popularAnime';
+import { POPULAR_ANIME_DATABASE } from '../data/popularAnime';
 
 export interface EpisodeRecommendation {
   episode: number;

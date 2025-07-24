@@ -1,6 +1,6 @@
-import { getAllAnimeEpisodes, getAnimeById } from './jikan';
-import { POPULAR_ANIME_DATABASE, FRANCHISE_GUIDES, getFranchiseGuide, getAnimesByFranchise } from '../data/popularAnime';
-import { WatchGuide, EpisodeRecommendation } from './watchGuideService';
+import { getAnimeById } from './jikan';
+import { POPULAR_ANIME_DATABASE, getFranchiseGuide, getAnimesByFranchise } from '../data/popularAnime';
+import { EpisodeRecommendation } from './watchGuideService';
 
 export interface FranchiseWatchGuide {
   franchiseName: string;
@@ -39,8 +39,18 @@ export interface FranchiseWatchGuide {
   proOnly: boolean;
 }
 
+interface FranchiseInstructions {
+  description: string;
+  watchOrder: string[];
+  specialInstructions: string;
+}
+
+interface FranchiseWatchInstructionsMap {
+  [key: string]: FranchiseInstructions;
+}
+
 // Specific franchise watch order instructions
-const FRANCHISE_WATCH_INSTRUCTIONS = {
+const FRANCHISE_WATCH_INSTRUCTIONS: FranchiseWatchInstructionsMap = {
   'Danganronpa': {
     description: 'Complete Danganronpa anime series with proper alternating watch order.',
     watchOrder: [

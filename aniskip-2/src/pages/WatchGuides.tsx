@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Crown, Lock, Search, Loader2 } from "lucide-react";
+import { Star, Clock, SkipForward, Crown, Search, Loader2 } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchGuide } from "../lib/useWatchGuide";
 import { WatchGuide } from "../services/watchGuideService";
-import { useNavigate } from "react-router-dom";
 import Paywall from "../components/ui/Paywall";
 
 const WatchGuides: React.FC = () => {
   const { plan, loading: planLoading } = useUserPlan();
   const [selectedGuide, setSelectedGuide] = useState<WatchGuide | null>(null);
-  const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
+  const [, setSelectedFranchiseGuide] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { guides, franchiseGuides, loading, error, searchGuides, loadPopularGuides, clearError } = useWatchGuide();
-  const navigate = useNavigate();
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
@@ -26,10 +24,6 @@ const WatchGuides: React.FC = () => {
   const handleClearSearch = () => {
     setSearchQuery("");
     loadPopularGuides();
-  };
-
-  const handleUpgradeToPro = () => {
-    navigate('/plans');
   };
 
   if (planLoading) {

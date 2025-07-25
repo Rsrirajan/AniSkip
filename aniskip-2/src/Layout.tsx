@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import {
   Play,
   BarChart3,
@@ -24,7 +24,6 @@ const navigationItems = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   useEnsureProfile();
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Session timeout on tab inactivity (2 hours)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { motion } from "framer-motion";
 import { Settings as SettingsIcon } from "lucide-react";
-import { Crown, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
+
 
 const themes = ["Auto", "Light", "Dark"];
 const timeZones = ["UTC", "Central Time", "Eastern Time", "Pacific Time"];
 
 const Settings: React.FC = () => {
-  const navigate = useNavigate();
   const [, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -98,29 +97,7 @@ const Settings: React.FC = () => {
     setSaving(false);
   };
 
-  const handleUpgradeToPro = async () => {
-    setSaving(true);
-    setError(null);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setError("Not logged in");
-      setSaving(false);
-      return;
-    }
-    const { error } = await supabase
-      .from("profiles")
-      .update({ plan: 'pro' })
-      .eq("id", user.id);
-    if (error) {
-      setError("Failed to upgrade to Pro");
-      console.error(error);
-    } else {
-      setSuccess("Successfully upgraded to Pro!");
-      // Refresh the page to update the UI
-      window.location.reload();
-    }
-    setSaving(false);
-  };
+
 
   if (loading) {
     return <div className="flex justify-center items-center h-96"><div className="w-10 h-10 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" /></div>;
@@ -193,11 +170,15 @@ const Settings: React.FC = () => {
               </div>
             </div>
           </div>
-          {/* Sidebar: Quick Stats */}
+          {/* Sidebar: Account Info */}
           <div className="flex flex-col gap-8">
-            {/* All features are free, no premium UI needed */}
-            
-            {/* Account info block remains, but no premium references */}
+            <div className="bg-white/10 rounded-2xl p-6 shadow-xl border border-white/10">
+              <h3 className="text-lg font-bold text-white mb-4">Account Info</h3>
+              <div className="space-y-2 text-sm">
+                <div className="text-slate-300">Plan: <span className="text-purple-300 capitalize">{plan}</span></div>
+                <div className="text-slate-300">Member since: <span className="text-purple-300">{createdAt || "Unknown"}</span></div>
+              </div>
+            </div>
           </div>
         </motion.div>
 

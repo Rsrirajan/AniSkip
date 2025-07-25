@@ -10,7 +10,7 @@ import {
   Trophy,
   Eye
 } from "lucide-react"
-import { getAnimeDetails, Anime, getTrendingAnime } from "../services/anilist";
+import { getAnimeDetails, Anime } from "../services/anilist";
 import { getTopAnime as getJikanTopAnime } from "../services/jikan";
 import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";

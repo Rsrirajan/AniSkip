@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogIn, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -23,45 +21,12 @@ const popularAnime = [
 
 
 const Home: React.FC = () => {
-  const [featuredAnime, setFeaturedAnime] = useState<any[]>([]);
+  // Remove dynamic trending fetch for static build
+  const [featuredAnime] = useState<any[]>([]);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTrendingSeasonalAnime = async () => {
-      const query = `
-        query {
-          Page(perPage: 3) {
-            media(type: ANIME, sort: TRENDING_DESC, season: SUMMER, seasonYear: 2025, format_in: [TV, TV_SHORT]) {
-              id
-              title {
-                romaji
-                english
-              }
-              coverImage {
-                large
-              }
-              episodes
-              averageScore
-            }
-          }
-        }
-      `;
-
-      try {
-        const response = await axios.post("https://graphql.anilist.co", {
-          query,
-        });
-
-        const results = response.data.data.Page.media;
-        setFeaturedAnime(results);
-      } catch (error) {
-        console.error("Failed to fetch trending anime:", error);
-      }
-    };
-
-    fetchTrendingSeasonalAnime();
-  }, []);
+  // Removed axios fetch for build compatibility
 
   // Carousel navigation handlers
   const nextSlide = () => setCarouselIndex((i) => (i + 1) % featuredAnime.length);

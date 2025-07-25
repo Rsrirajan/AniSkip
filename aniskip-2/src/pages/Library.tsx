@@ -157,7 +157,7 @@ export default function Library() {
                 isInWatchlist={true}
                 onRemoveFromWatchlist={handleRemoveFromWatchlist}
                 currentStatus={trackedMap[anime.id]?.status || "Plan to Watch"}
-                currentEpisode={trackedMap[anime.id]?.episode || 1}
+                currentEpisode={trackedMap[anime.id]?.episode ?? 0}
               />
             ))}
           </motion.div>

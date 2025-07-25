@@ -30,11 +30,11 @@ const Header: React.FC = () => {
           <>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="text-slate-300 hover:text-white p-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500">
+                <button className="text-slate-300 hover:text-white p-2 rounded-xl transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500">
                   <img
                     src={pfp}
                     alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover border-2 border-purple-400 bg-slate-800"
+                    className="w-8 h-8 rounded-xl object-cover border-2 border-purple-400 bg-slate-800"
                     style={{ background: '#fff' }}
                   />
                 </button>

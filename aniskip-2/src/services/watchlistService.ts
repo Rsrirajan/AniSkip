@@ -68,7 +68,7 @@ export async function setTrackedAnime(userId: string, animeId: number, status: s
     }
     
     // Validate inputs
-    if (!animeId || !status || episode < 1) {
+    if (!animeId || !status || (episode < 0)) {
       console.error('Invalid inputs:', { animeId, status, episode });
       return false;
     }

@@ -11,6 +11,7 @@ import {
   Eye
 } from "lucide-react"
 import { getAnimeDetails, Anime, getTrendingAnime } from "../services/anilist";
+import { getTopAnime as getJikanTopAnime } from "../services/jikan";
 import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";
 import { useUserPlan } from "../lib/useUserPlan";
@@ -87,13 +88,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     setTrendingLoading(true);
-    getTrendingAnime(1, 3).then(data => {
-      setTrendingAnime(data.data.Page.media || []);
-      setTrendingLoading(false);
-    }).catch(error => {
-      console.error('Error loading trending anime:', error);
-      setTrendingLoading(false);
-    });
+    getJikanTopAnime(1, 3)
+      .then(data => {
+        setTrendingAnime(data.data || []);
+        setTrendingLoading(false);
+      })
+      .catch(error => {
+        console.error('Error loading trending anime:', error);
+        setTrendingLoading(false);
+      });
   }, []);
 
   // Restore stats array
@@ -240,6 +243,16 @@ export default function Dashboard() {
     }
   }
 
+  // Helper to get a friendly display name
+  function getDisplayName(profile: any) {
+    if (!profile?.display_name) return "there";
+    // If display_name looks like an email, show only the part before @
+    if (profile.display_name.includes("@")) {
+      return profile.display_name.split("@")[0];
+    }
+    return profile.display_name.split(" ")[0];
+  }
+
   if (planLoading || watchlistLoading) return (
     <div className="flex justify-center items-center h-96">
       <div className="w-10 h-10 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
@@ -261,8 +274,7 @@ export default function Dashboard() {
                 className="text-3xl md:text-4xl font-bold text-white mb-2"
                 variants={textVariants}
               >
-                  {profileLoading ? "Welcome back..." : `Welcome back, ${profile?.display_name?.split(" ")[0] || "there"}`
-}
+                  {profileLoading ? "Welcome back..." : `Welcome back, ${getDisplayName(profile)}`}
               </motion.h1>
               <motion.p 
                 className="text-slate-400"
@@ -485,88 +497,60 @@ export default function Dashboard() {
                 </div>
               ) : (
                 trendingAnime.map((anime) => (
-                  <motion.div 
-                    key={anime.id} 
+                  <motion.div
+                    key={anime.mal_id}
                     className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition-colors cursor-pointer"
                     variants={itemVariants}
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.02,
                       x: 5,
                       transition: { type: "spring", stiffness: 300 }
                     }}
                     onClick={() => {
-                      // Convert AniList anime format to our Anime format
-                      const convertedAnime = {
-                        id: anime.id,
+                      setSelectedAnime({
+                        id: anime.mal_id,
                         title: {
-                          english: anime.title.english || anime.title.romaji || anime.title.native,
-                          romaji: anime.title.romaji || anime.title.english || anime.title.native,
-                          native: anime.title.native || anime.title.english || anime.title.romaji
+                          english: anime.title_english || anime.title,
+                          romaji: anime.title,
+                          native: anime.title_japanese || anime.title,
                         },
                         coverImage: {
-                          large: anime.coverImage.large,
-                          medium: anime.coverImage.medium
+                          large: anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url,
+                          medium: anime.images?.jpg?.image_url,
                         },
-                        bannerImage: anime.bannerImage || anime.coverImage.large,
+                        bannerImage: anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url,
                         episodes: anime.episodes || 0,
                         status: anime.status?.toUpperCase() || "UNKNOWN",
-                        averageScore: anime.averageScore ? anime.averageScore * 10 : 0,
-                        genres: anime.genres || [],
-                        description: anime.description || "",
+                        averageScore: anime.score ? anime.score * 10 : 0,
+                        genres: anime.genres?.map((g: any) => g.name) || [],
+                        description: anime.synopsis || "",
                         duration: anime.duration || 0,
-                        format: "TV", // Assuming TV for now, needs more robust mapping
-                        season: "UNKNOWN",
-                        seasonYear: anime.seasonYear || 0,
-                        studios: { nodes: [] }, // Assuming no studios for now
-                        source: "ANILIST"
-                      } as Anime;
-                      setSelectedAnime(convertedAnime);
+                        format: anime.type || "TV",
+                        season: anime.season || "UNKNOWN",
+                        seasonYear: anime.year || 0,
+                        studios: { nodes: anime.studios || [] }
+                      });
                       setModalOpen(true);
                     }}
                   >
-                    <img src={anime.coverImage.large} alt={anime.title.english || anime.title.romaji || anime.title.native} className="w-14 h-20 object-cover rounded-lg" />
+                    <img src={anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url} alt={anime.title_english || anime.title} className="w-14 h-20 object-cover rounded-lg" />
                     <div className="flex-1">
-                      <h4 className="font-medium text-white text-sm mb-1">{anime.title.english || anime.title.romaji || anime.title.native}</h4>
+                      <h4 className="font-medium text-white text-sm mb-1">{anime.title_english || anime.title}</h4>
                       <div className="flex items-center gap-2">
                         <div className="bg-yellow-500/20 text-yellow-300 text-xs px-2 py-1 rounded flex items-center gap-1">
                           <Star className="w-3 h-3" />
-                          {anime.averageScore ? (anime.averageScore / 10).toFixed(1) : 'N/A'}
+                          {anime.score ? anime.score.toFixed(1) : 'N/A'}
                         </div>
                         <span className="text-xs text-slate-400">
                           {anime.episodes ? `${anime.episodes} eps` : 'Ongoing'}
                         </span>
                       </div>
                     </div>
-                    <button 
+                    <button
                       className="text-slate-300 hover:text-white p-2 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Convert and add to watchlist
-                        const convertedAnime = {
-                          id: anime.id,
-                          title: {
-                            english: anime.title.english || anime.title.romaji || anime.title.native,
-                            romaji: anime.title.romaji || anime.title.english || anime.title.native,
-                            native: anime.title.native || anime.title.english || anime.title.romaji
-                          },
-                          coverImage: {
-                            large: anime.coverImage.large,
-                            medium: anime.coverImage.medium
-                          },
-                          bannerImage: anime.bannerImage || anime.coverImage.large,
-                          episodes: anime.episodes || 0,
-                          status: anime.status?.toUpperCase() || "UNKNOWN",
-                          averageScore: anime.averageScore ? anime.averageScore * 10 : 0,
-                          genres: anime.genres || [],
-                          description: anime.description || "",
-                          duration: anime.duration || 0,
-                          format: "TV", // Assuming TV for now, needs more robust mapping
-                          season: "UNKNOWN",
-                          seasonYear: anime.seasonYear || 0,
-                          studios: { nodes: [] }, // Assuming no studios for now
-                          source: "ANILIST"
-                        } as Anime;
-                        updateTrackedAnime(convertedAnime.id, "Plan to Watch", 1);
+                        updateTrackedAnime(anime.mal_id, "Plan to Watch", 1);
                       }}
                     >
                       <span className="text-lg">+</span>

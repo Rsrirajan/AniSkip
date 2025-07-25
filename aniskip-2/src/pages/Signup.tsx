@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { ensureUserProfile } from '../lib/ensureUserProfile';
+import { Play } from "lucide-react";
 
 const Signup: React.FC = () => {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -18,6 +19,18 @@ const Signup: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Handle email verification callback
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.replace('#', '?'));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (access_token && refresh_token) {
+        supabase.auth.setSession({ access_token, refresh_token }).then(() => {
+          navigate('/dashboard');
+        });
+      }
+    }
     supabase.auth.getUser().then(async ({ data }) => {
       if (data?.user) {
         await ensureUserProfile(data.user);
@@ -109,14 +122,14 @@ const Signup: React.FC = () => {
           className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
         >
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{mode === 'signup' ? 'Account Created!' : 'Signed In!'}</h2>
             <p className="text-gray-600 mb-4">
-              {mode === 'signup' ? 'Please check your email to verify your account before signing in.' : 'Welcome back!'}
+              {mode === 'signup' ? 'Please check your email (including your junk/spam folder) for a verification email from Supabase before signing in.' : 'Welcome back!'}
             </p>
             <button
               onClick={() => navigate('/dashboard')}
@@ -139,10 +152,8 @@ const Signup: React.FC = () => {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7L8 5z" />
-            </svg>
+          <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Play className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">AniSkip Pro</h1>
         </div>

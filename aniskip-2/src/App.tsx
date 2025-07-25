@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom"
 import Layout from "./Layout"
 import Dashboard from "./pages/Dashboard"
 import Library from "./pages/Library"
@@ -9,7 +9,9 @@ import AnimeDetails from "./pages/AnimeDetails"
 import Landing from "./pages/Landing"
 import Signup from "./pages/Signup"
 import WatchGuides from "./pages/WatchGuides"
+import AuthCallback from "./pages/AuthCallback";
 import { supabase } from "./lib/supabaseClient"
+import { useEffect } from "react";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<any>(null);
@@ -42,10 +44,30 @@ function RedirectIfAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AuthHashHandler() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.replace('#', '?'));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (access_token && refresh_token) {
+        supabase.auth.setSession({ access_token, refresh_token }).then(() => {
+          window.location.hash = '';
+          navigate('/dashboard', { replace: true });
+        });
+      }
+    }
+  }, [navigate]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/auth-callback" element={<AuthCallback />} />
         <Route path="/" element={<RedirectIfAuth><Landing /></RedirectIfAuth>} />
         <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
         <Route path="/reset" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />

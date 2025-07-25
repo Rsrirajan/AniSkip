@@ -200,7 +200,7 @@ const Landing: React.FC = () => {
       {/* Header - Simple */}
       <header className="w-full px-6 py-4 flex items-center justify-between border-b border-purple-800/40 bg-white/10 backdrop-blur-lg fixed top-0 left-0 right-0 z-50" style={{background: 'rgba(30, 27, 75, 0.5)'}}>
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}> 
           <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <Play className="w-8 h-8 text-white" />
           </div>
@@ -504,7 +504,7 @@ const Landing: React.FC = () => {
                   <p className="text-slate-300 text-sm leading-relaxed">
                     Skip the fillers, track your progress, and discover amazing anime. The ultimate anime tracking experience for true fans.
                   </p>
-                  {animeCount > 0 && (
+                  {animeCount > 0 && false && (
                     <div className="flex items-center gap-2 text-slate-400 text-sm">
                       <Database className="w-4 h-4" />
                       <span>Access to {animeCount.toLocaleString()}+ anime from AniList</span>
@@ -521,16 +521,6 @@ const Landing: React.FC = () => {
                 </div>
 
                 {/* Quick Links */}
-                <div className="space-y-4">
-                  <h4 className="text-white font-semibold text-lg">Quick Links</h4>
-                  <div className="space-y-2">
-                    <Link to="/search" className="block text-slate-300 hover:text-white transition-colors">Browse Anime</Link>
-                    <Link to="/search" className="block text-slate-300 hover:text-white transition-colors">Trending</Link>
-                    <Link to="/search" className="block text-slate-300 hover:text-white transition-colors">Seasonal</Link>
-                    <Link to="/search" className="block text-slate-300 hover:text-white transition-colors">Genres</Link>
-                    <Link to="/dashboard" className="block text-slate-300 hover:text-white transition-colors">Calendar</Link>
-                  </div>
-                </div>
               </div>
               
               <div className="border-t border-slate-800 mt-8 pt-8 text-center">

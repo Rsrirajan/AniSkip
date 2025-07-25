@@ -14,9 +14,9 @@
         "entries": [
           { "title": "Romance Dawn Arc", "episodes": "1-3", "recommendation": "watch" },
           { "title": "Orange Town Arc", "episodes": "4-8", "recommendation": "watch" },
-          { "title": "[OVA] - Defeat Him! The Pirate Ganzack!", "recommendation": "watch" },
+          { "title": "[OVA] - Defeat Him! The Pirate Ganzack!", "recommendation": "optional" },
           { "title": "Syrup Village Arc", "episodes": "9-18", "recommendation": "watch" },
-          { "title": "[MOVIE 1] - One Piece: The Movie", "recommendation": "watch" },
+          { "title": "[MOVIE 1] - One Piece: The Movie", "recommendation": "optional" },
           { "title": "Baratie Arc", "episodes": "19-30", "recommendation": "watch" },
           { "title": "Arlong Park Arc", "episodes": "31-44", "recommendation": "watch" },
           { "title": "[TV SPECIAL] - Episode of Nami", "recommendation": "skip" },

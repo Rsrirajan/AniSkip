@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2 flex flex-col gap-4 mb-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8 5v14l11-7L8 5z" fill="#fff" />
                 </svg>
@@ -54,18 +54,6 @@ const Footer: React.FC = () => {
                 Get Started Free
               </button>
             )}
-          </div>
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><button onClick={() => navigate('/search')} className="text-slate-400 hover:text-purple-300 transition-colors">Browse Anime</button></li>
-              <li><button onClick={() => navigate('/search')} className="text-slate-400 hover:text-purple-300 transition-colors">Trending</button></li>
-              <li><button onClick={() => navigate('/search')} className="text-slate-400 hover:text-purple-300 transition-colors">Seasonal</button></li>
-              <li><button onClick={() => navigate('/search')} className="text-slate-400 hover:text-purple-300 transition-colors">Genres</button></li>
-              {/* Remove Calendar if logged in */}
-              {!user && <li><button onClick={() => navigate('/dashboard')} className="text-slate-400 hover:text-purple-300 transition-colors">Calendar</button></li>}
-            </ul>
           </div>
           {/* Support (only if not logged in) */}
           {!user && (

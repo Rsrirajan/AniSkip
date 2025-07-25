@@ -127,15 +127,15 @@ const Signup: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{mode === 'signup' ? 'Account Created!' : 'Signed In!'}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{mode === 'signup' ? 'Account Created!' : 'Welcome back!'}</h2>
             <p className="text-gray-600 mb-4">
-              {mode === 'signup' ? 'Please check your email (including your junk/spam folder) for a verification email from Supabase before signing in.' : 'Welcome back!'}
+              {mode === 'signup' ? 'Please check your email (including your junk/spam folder) for a verification email from Supabase before signing in.' : 'You have been successfully signed in!'}
             </p>
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => mode === 'signup' ? setMode('signin') : navigate('/dashboard')}
               className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
             >
-              Go to Dashboard
+              {mode === 'signup' ? 'Go to Sign In' : 'Go to Dashboard'}
             </button>
           </div>
         </motion.div>

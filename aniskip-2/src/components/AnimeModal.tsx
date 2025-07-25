@@ -62,11 +62,11 @@ const SMART_WATCH_GUIDES: Record<number, string[]> = {
   ]
 };
 
-// Helper to fetch streaming sites from Jikan
-function useJikanStreamingSites(malId?: number) {
+// Helper to fetch streaming sites from Jikan (now uses /anime/{id}/full)
+function useJikanStreamingSites(malId?: number, enabled?: boolean) {
   const [streamingSites, setStreamingSites] = useState<{ name: string; url: string }[]>([]);
   useEffect(() => {
-    if (!malId) return;
+    if (!malId || !enabled) return;
     fetch(`https://api.jikan.moe/v4/anime/${malId}/full`)
       .then(res => {
         if (!res.ok) throw new Error('Not found');
@@ -74,18 +74,18 @@ function useJikanStreamingSites(malId?: number) {
       })
       .then(json => {
         if (json?.data?.streaming && Array.isArray(json.data.streaming)) {
-          setStreamingSites(json.data.streaming);
+          setStreamingSites(json.data.streaming.map((s: any) => ({ name: s.name, url: s.url })));
         } else {
           setStreamingSites([]);
         }
       })
       .catch(() => setStreamingSites([]));
-  }, [malId]);
+  }, [malId, enabled]);
   return streamingSites;
 }
 
-// Helper to fetch episode data from Jikan API
-function useJikanEpisodes(malId?: number, totalEpisodes?: number) {
+// Helper to fetch all episodes from Jikan API (all pages)
+function useJikanEpisodesAll(malId?: number, enabled?: boolean) {
   const [episodes, setEpisodes] = useState<{
     number: number;
     title: string;
@@ -96,52 +96,33 @@ function useJikanEpisodes(malId?: number, totalEpisodes?: number) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!malId || !totalEpisodes) return;
-    
+    if (!malId || !enabled) return;
     setLoading(true);
-    const fetchEpisodes = async () => {
-      const episodePromises = [];
-      const maxEpisodes = Math.min(totalEpisodes, 10); // Limit to first 10 episodes to avoid rate limiting
-      
-      for (let i = 1; i <= maxEpisodes; i++) {
-        episodePromises.push(
-          fetch(`https://api.jikan.moe/v4/anime/${malId}/episodes/${i}`)
-            .then(res => res.ok ? res.json() : null)
-            .then(json => json?.data ? {
-              number: json.data.mal_id || i,
-              title: json.data.title || `Episode ${i}`,
-              filler: json.data.filler || false,
-              recap: json.data.recap || false,
-              synopsis: json.data.synopsis || undefined
-            } : {
-              number: i,
-              title: `Episode ${i}`,
-              filler: false,
-              recap: false
-            })
-            .catch(() => ({
-              number: i,
-              title: `Episode ${i}`,
-              filler: false,
-              recap: false
-            }))
-        );
+    let allEpisodes: any[] = [];
+    let page = 1;
+    let hasNext = true;
+    const fetchPage = async () => {
+      while (hasNext) {
+        const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}/episodes?page=${page}`);
+        if (!res.ok) break;
+        const json = await res.json();
+        if (Array.isArray(json.data)) {
+          allEpisodes = allEpisodes.concat(json.data.map((ep: any) => ({
+            number: ep.mal_id || ep.episode || ep.episode_id || ep.number || 0,
+            title: ep.title || `Episode ${ep.mal_id || ep.episode || ep.episode_id || ep.number || 0}`,
+            filler: ep.filler || false,
+            recap: ep.recap || false,
+            synopsis: ep.synopsis || undefined
+          })));
+        }
+        hasNext = json.pagination?.has_next_page;
+        page++;
       }
-      
-      try {
-        const results = await Promise.all(episodePromises);
-        setEpisodes(results);
-      } catch (error) {
-        console.error('Error fetching episodes:', error);
-        setEpisodes([]);
-      } finally {
-        setLoading(false);
-      }
+      setEpisodes(allEpisodes);
+      setLoading(false);
     };
-    
-    fetchEpisodes();
-  }, [malId, totalEpisodes]);
-  
+    fetchPage().catch(() => setLoading(false));
+  }, [malId, enabled]);
   return { episodes, loading };
 }
 
@@ -197,8 +178,8 @@ export default function AnimeModal({
 
   // Use MyAnimeList ID for Jikan API if available
   const malId = (anime as any).mal_id;
-  const streamingSites = useJikanStreamingSites(malId);
-  const { episodes: jikanEpisodes, loading: episodesLoading } = useJikanEpisodes(malId, anime.episodes);
+  const streamingSites = useJikanStreamingSites(malId, !!userId);
+  const { episodes: jikanEpisodes, loading: episodesLoading } = useJikanEpisodesAll(malId, !!userId);
 
   return (
     <AnimatePresence>
@@ -356,7 +337,7 @@ export default function AnimeModal({
                     </div>
 
                     {/* Debug Test Button */}
-                    <div className="mb-4 p-3 bg-slate-700/50 rounded-lg">
+                    {/*<div className="mb-4 p-3 bg-slate-700/50 rounded-lg">
                       {userId ? (
                         <>
                           <div className="flex items-center gap-2 mb-2">
@@ -409,11 +390,11 @@ export default function AnimeModal({
                       <button 
                         onClick={() => {
                           onClose();
-                          window.location.href = '/join';
+                          navigate('/signup'); // Redirect to the new sign-up page
                         }}
                         className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
                       >
-                        Sign In
+                        Sign Up
                       </button>
                     </div>
                   </div>
@@ -504,47 +485,7 @@ export default function AnimeModal({
                   )} */}
                 </div>
 
-                {/* Episode Breakdown - Now free for all */}
-                {anime.id && (
-                  <div className="mt-8">
-                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-green-400" /> Episode Breakdown
-                    </h3>
-                    {EPISODE_GUIDES[anime.id] ? (
-                      <>
-                        <div className="overflow-x-auto mb-2">
-                          <table className="min-w-[300px] w-full text-sm text-left text-slate-300">
-                            <thead>
-                              <tr>
-                                <th className="px-2 py-1">Ep</th>
-                                <th className="px-2 py-1">Type</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {EPISODE_GUIDES[anime.id].episodes.map(ep => (
-                                <tr key={ep.number}>
-                                  <td className="px-2 py-1 font-bold">{ep.number}</td>
-                                  <td className={`px-2 py-1 capitalize ${ep.type === "filler" ? "text-red-400" : ep.type === "recap" ? "text-yellow-300" : "text-green-400"}`}>{ep.type}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        {EPISODE_GUIDES[anime.id].summary && (
-                          <div className="mb-2 text-purple-300 font-medium">{EPISODE_GUIDES[anime.id].summary}</div>
-                        )}
-                        {EPISODE_GUIDES[anime.id].skipTo && (
-                          <div className="mb-2 text-blue-300">Recommendation: <span className="font-bold">Skip to Ep {EPISODE_GUIDES[anime.id].skipTo}</span></div>
-                        )}
-                        {EPISODE_GUIDES[anime.id].timeSavedHours && (
-                          <div className="mb-2 text-green-300">Save <span className="font-bold">{EPISODE_GUIDES[anime.id].timeSavedHours} hours</span> by skipping filler/recap.</div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="text-slate-400">No episode breakdown available for this anime yet.</div>
-                    )}
-                  </div>
-                )}
+                
 
                 {/* Smart Watch Guide - Now free for all */}
                 {anime.id && SMART_WATCH_GUIDES[anime.id] && (
@@ -560,8 +501,8 @@ export default function AnimeModal({
                   </div>
                 )}
 
-                {/* Streaming Sites - Now free for all */}
-                {streamingSites.length > 0 && (
+                {/* Streaming Sites - Only for logged-in users */}
+                {userId && streamingSites.length > 0 && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                       <Star className="w-5 h-5 text-green-400" /> Streaming Sites
@@ -576,11 +517,11 @@ export default function AnimeModal({
                   </div>
                 )}
 
-                {/* Jikan Episode Breakdown */}
-                {malId && jikanEpisodes.length > 0 && (
+                {/* Episode Breakdown - Only for logged-in users */}
+                {/*userId ? (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-green-400" /> Live Episode Data
+                      <Star className="w-5 h-5 text-green-400" /> Episode Breakdown
                     </h3>
                     {episodesLoading ? (
                       <div className="text-slate-400 text-sm">Loading episode data...</div>
@@ -615,12 +556,26 @@ export default function AnimeModal({
                           </table>
                         </div>
                         <div className="text-xs text-slate-400">
-                          Showing first {jikanEpisodes.length} episodes • Data from MyAnimeList
+                          Showing {jikanEpisodes.length} episodes
                         </div>
                       </>
                     )}
                   </div>
-                )}
+                ) : (
+                  <div className="mt-8 p-6 bg-slate-800/40 rounded-xl border border-slate-700/50 text-center">
+                    <h3 className="text-white font-semibold text-lg mb-2">Sign up to see the episode breakdown by canon and filler</h3>
+                    <p className="text-slate-300 text-sm mb-4">Unlock detailed episode breakdowns, including canon, filler, and recap flags, by creating a free account.</p>
+                    <button 
+                      onClick={() => {
+                        onClose();
+                        navigate('/signup');
+                      }}
+                      className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                )*/}
               </div>
             </div>
           </motion.div>
@@ -628,4 +583,4 @@ export default function AnimeModal({
       )}
     </AnimatePresence>
   );
-} 
+}

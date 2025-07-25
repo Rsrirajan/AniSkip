@@ -15,6 +15,7 @@ import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";
 import { useUserPlan } from "../lib/useUserPlan";
 import { useWatchlist } from "../lib/useWatchlist";
+import { useProfile } from "../lib/useProfile";
 
 function getMonthlyGoal() {
   return Number(localStorage.getItem("monthlyGoal") || 15);
@@ -68,6 +69,8 @@ export default function Dashboard() {
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { profile, loading: profileLoading } = useProfile();
+
 
   // Stats
   const [totalAnime, setTotalAnime] = useState(0);
@@ -258,7 +261,8 @@ export default function Dashboard() {
                 className="text-3xl md:text-4xl font-bold text-white mb-2"
                 variants={textVariants}
               >
-                Welcome back, Ramanan
+                  {profileLoading ? "Welcome back..." : `Welcome back, ${profile?.display_name?.split(" ")[0] || "there"}`
+}
               </motion.h1>
               <motion.p 
                 className="text-slate-400"

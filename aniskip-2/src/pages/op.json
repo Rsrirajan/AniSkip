@@ -1,0 +1,181 @@
+{
+    "franchiseName": "One Piece",
+    "totalEpisodes": 1136,
+    "totalAnimeEntries": 50,
+    "combinedStats": {
+      "canonEpisodes": 1032,
+      "fillerEpisodes": 97,
+      "recapEpisodes": 7,
+      "timeSaved": 1920
+    },
+    "arcs": [
+      {
+        "saga": "East Blue Saga",
+        "entries": [
+          { "title": "Romance Dawn Arc", "episodes": "1-3", "recommendation": "watch" },
+          { "title": "Orange Town Arc", "episodes": "4-8", "recommendation": "watch" },
+          { "title": "[OVA] - Defeat Him! The Pirate Ganzack!", "recommendation": "watch" },
+          { "title": "Syrup Village Arc", "episodes": "9-18", "recommendation": "watch" },
+          { "title": "[MOVIE 1] - One Piece: The Movie", "recommendation": "watch" },
+          { "title": "Baratie Arc", "episodes": "19-30", "recommendation": "watch" },
+          { "title": "Arlong Park Arc", "episodes": "31-44", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Episode of Nami", "recommendation": "skip" },
+          { "title": "[TV SPECIAL] - Adventure in the Ocean's Navel", "recommendation": "watch" },
+          { "title": "Loguetown Arc", "episodes": "45", "recommendation": "watch" },
+          { "title": "Buggy's Crew Adventure Chronicles", "episodes": "46-47", "recommendation": "watch" },
+          { "title": "Loguetown Arc Cont.", "episodes": "48-53", "recommendation": "watch" },
+          { "title": "[MOVIE 2] - Clockwork Island Adventure", "recommendation": "watch" },
+          { "title": "[SHORT] - Jango's Dance Carnival", "recommendation": "watch" },
+          { "title": "[FILLER] - Warship Island Arc", "episodes": "54-61", "recommendation": "skip" },
+          { "title": "[TV SPECIAL] - One Piece: Episode of East Blue", "recommendation": "skip" }
+        ]
+      },
+      {
+        "saga": "Alabasta Saga",
+        "entries": [
+          { "title": "Reverse Mountain Arc", "episodes": "62-63", "recommendation": "watch" },
+          { "title": "Whisky Peak Arc", "episodes": "64-67", "recommendation": "watch" },
+          { "title": "Diary of Koby-Meppo", "episodes": "68-69", "recommendation": "watch" },
+          { "title": "Little Garden Arc", "episodes": "70-77", "recommendation": "watch" },
+          { "title": "Drum Island Arc", "episodes": "78-91", "recommendation": "watch" },
+          { "title": "[SHORT] - Dream Soccer King", "recommendation": "watch" },
+          { "title": "Alabasta Arc", "episodes": "92-130", "recommendation": "watch" },
+          { "title": "[MOVIE 8] - The Desert Princess and the Pirates", "recommendation": "skip" },
+          { "title": "[FILLER] - Post-Alabasta Arc", "episodes": "131-135", "recommendation": "skip" },
+          { "title": "[MOVIE 3] - Chopper's Kingdom on the Island of Strange Animals", "recommendation": "optional" }
+        ]
+      },
+      {
+        "saga": "Sky Island Saga",
+        "entries": [
+          { "title": "[FILLER] - Goat Island Arc", "episodes": "136-138", "recommendation": "skip" },
+          { "title": "[SHORT] - Take Aim! The Pirate Baseball King", "recommendation": "watch" },
+          { "title": "[FILLER] - Ruluka Island Arc", "episodes": "139-143", "recommendation": "skip" },
+          { "title": "[MOVIE 4] - Dead End Adventure", "recommendation": "watch" },
+          { "title": "Jaya Arc", "episodes": "144-152", "recommendation": "watch" },
+          { "title": "Skypiea Arc", "episodes": "153-195", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Episode of Sky Island", "recommendation": "skip" },
+          { "title": "[FILLER] - G-8 Arc", "episodes": "196-206", "recommendation": "optional" }
+        ]
+      },
+      {
+        "saga": "Water 7 Saga",
+        "entries": [
+          { "title": "Long Ring Long Land Arc", "episodes": "207-219", "recommendation": "watch" },
+          { "title": "[MOVIE 5] - The Cursed Holy Sword", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Open Upon the Great Sea! A Father's Huge, HUGE Dream", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Protect! The Last Great Stage", "recommendation": "watch" },
+          { "title": "[MOVIE 6] – Baron Omatsuri and the Secret Island", "recommendation": "watch" },
+          { "title": "[FILLER] - Ocean's Dream Arc", "episodes": "220-224", "recommendation": "skip" },
+          { "title": "[FILLER] - Foxy's Return Arc", "episodes": "225-226", "recommendation": "skip" },
+          { "title": "Robin’s Arc", "episodes": "227-228", "recommendation": "watch" },
+          { "title": "[MOVIE 7] - Giant Mecha Soldier of Karakuri Castle", "recommendation": "watch" },
+          { "title": "Water 7 Arc", "episodes": "229-263", "recommendation": "watch" },
+          { "title": "[FILLER] - Recap Episodes", "episodes": "279-283", "recommendation": "skip" },
+          { "title": "Enies Lobby Arc", "episodes": "264-290, 293-302, 304-312", "recommendation": "watch" },
+          { "title": "[FILLER] - Boss Luffy Historical Specials", "episodes": "291-292, 303", "recommendation": "skip" },
+          { "title": "Post-Enies Lobby Arc", "episodes": "313-316, 320-325", "recommendation": "watch" },
+          { "title": "[FILLER] - Post Enies Lobby Arc Filler", "episodes": "317-319", "recommendation": "skip" },
+          { "title": "[TV SPECIAL] - Episode of Merry", "recommendation": "watch" },
+          { "title": "[MOVIE 9] - Episode of Chopper Plus", "recommendation": "skip" }
+        ]
+      },
+      {
+        "saga": "Thriller Bark Saga",
+        "entries": [
+          { "title": "[FILLER] - Ice Hunter Arc", "episodes": "326-335", "recommendation": "skip" },
+          { "title": "[CHOPPERMAN SPECIAL] - Episode 336", "recommendation": "watch" },
+          { "title": "Thriller Bark Arc", "episodes": "337-381", "recommendation": "watch" },
+          { "title": "[OVA] - Romance Dawn Story", "recommendation": "watch" },
+          { "title": "[FILLER] - Spa Island Arc", "episodes": "382-384", "recommendation": "skip" }
+        ]
+      },
+      {
+        "saga": "Summit War Saga",
+        "entries": [
+          { "title": "Sabaody Archipelago Arc", "episodes": "385-405", "recommendation": "watch" },
+          { "title": "[FILLER] - Boss Luffy Historical Specials", "episodes": "406-407", "recommendation": "skip" },
+          { "title": "Amazon Lily Arc", "episodes": "408-417", "recommendation": "watch" },
+          { "title": "Straw Hats Separation Serial Arc", "episodes": "418-421", "recommendation": "watch" },
+          { "title": "Impel Down Arc", "episodes": "422-425", "recommendation": "watch" },
+          { "title": "[FILLER] - Little East Blue Arc", "episodes": "426-429", "recommendation": "skip" },
+          { "title": "[MOVIE 10] - Strong World", "recommendation": "watch" },
+          { "title": "[OVA] - Strong World Episode 0", "recommendation": "watch" },
+          { "title": "[MOVIE 11] - Straw Hat Chase", "recommendation": "watch" },
+          { "title": "[SHORT] - ONE PIECE 3D! Trap Coaster", "recommendation": "watch" },
+          { "title": "Impel Down Arc Cont.", "episodes": "430-452", "recommendation": "watch" },
+          { "title": "Straw Hats Separation Serial Arc Cont.", "episodes": "453-456", "recommendation": "watch" },
+          { "title": "[FILLER] - Recap", "episodes": "457-458", "recommendation": "skip" },
+          { "title": "Marineford Arc", "episodes": "459-489", "recommendation": "watch" },
+          { "title": "Post-War Arc", "episodes": "490-491", "recommendation": "watch" },
+          { "title": "[FILLER] - Toriko Crossover", "episodes": "492", "recommendation": "skip" },
+          { "title": "Luffy’s Childhood", "episodes": "493-504", "recommendation": "watch" },
+          { "title": "Post-War Arc Cont.", "episodes": "505-516", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - 3D2Y", "recommendation": "watch" }
+        ]
+      },
+      {
+        "saga": "Fish-man Island Saga",
+        "entries": [
+          { "title": "Return to Sabaody Arc", "episodes": "517-522", "recommendation": "watch" },
+          { "title": "Fish-Man Island Arc", "episodes": "523-541", "recommendation": "watch" },
+          { "title": "[FILLER] - Toriko Crossover", "episodes": "542", "recommendation": "skip" },
+          { "title": "Fish-Man Island Arc Cont.", "episodes": "543-574", "recommendation": "watch" }
+        ]
+      },
+      {
+        "saga": "Dressrosa Saga",
+        "entries": [
+          { "title": "[FILLER] - Z's Ambition Arc", "episodes": "575-578", "recommendation": "skip" },
+          { "title": "[OVA] - Glorious Island Part 1", "recommendation": "watch" },
+          { "title": "[OVA] - Glorious Island Part 2", "recommendation": "watch" },
+          { "title": "[MOVIE 12] - Z", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Episode of Luffy", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Adventure of Nebulandia", "recommendation": "watch" },
+          { "title": "Punk Hazard Arc", "episodes": "579-589", "recommendation": "watch" },
+          { "title": "[FILLER] - Toriko & Dragon Ball Crossover", "episodes": "590", "recommendation": "skip" },
+          { "title": "Punk Hazard Arc Cont.", "episodes": "591-625", "recommendation": "watch" },
+          { "title": "[FILLER] - Caesar Retrieval Arc", "episodes": "626-628", "recommendation": "skip" },
+          { "title": "Dressrosa Arc", "episodes": "629-746", "recommendation": "watch" },
+          { "title": "[TV SPECIAL] - Episode of Sabo", "recommendation": "watch" }
+        ]
+      },
+      {
+        "saga": "Wholecake Island Saga",
+        "entries": [
+          { "title": "[FILLER] - Silver Mine Arc", "episodes": "747-750", "recommendation": "skip" },
+          { "title": "[TV SPECIAL] - Heart of Gold", "recommendation": "watch" },
+          { "title": "[MOVIE] - One Piece Film: Gold Episode 0", "recommendation": "watch" },
+          { "title": "[MOVIE 13] - One Piece Film: Gold", "recommendation": "watch" },
+          { "title": "Zou Arc", "episodes": "751-779", "recommendation": "watch" },
+          { "title": "[FILLER] - Marine Rookie Arc", "episodes": "780-782", "recommendation": "skip" },
+          { "title": "Whole Cake Island Arc", "episodes": "783-877", "recommendation": "watch" },
+          { "title": "Reverie Arc", "episodes": "878-889", "recommendation": "watch" }
+        ]
+      },
+      {
+        "saga": "Wano Country Saga",
+        "entries": [
+          { "title": "Wano Country Arc – Act 1", "episodes": "890-894", "recommendation": "watch" },
+          { "title": "[FILLER] - Cidre Guild Arc", "episodes": "895-896", "recommendation": "skip" },
+          { "title": "[MOVIE 14] - One Piece: Stampede", "recommendation": "watch" },
+          { "title": "Wano Country Arc - Act 1 (cont.)", "episodes": "897-906", "recommendation": "watch" },
+          { "title": "[FILLER] - 20th Anniversary Special", "episodes": "907", "recommendation": "skip" },
+          { "title": "Wano Country Arc – Act 1 (cont.)", "episodes": "908-916", "recommendation": "watch" },
+          { "title": "Wano Country Arc – Act 2", "episodes": "917-956", "recommendation": "watch" },
+          { "title": "Wano Country Arc – Act 3 (Oden Past)", "episodes": "957-1028", "recommendation": "watch" },
+          { "title": "[FILLER] - Uta’s Past Arc", "episodes": "1029-1030", "recommendation": "skip" },
+          { "title": "[MOVIE 15] - One Piece Film: Red", "recommendation": "watch" },
+          { "title": "Wano Country Arc – Act 3 (cont.)", "episodes": "1031-1085", "recommendation": "watch" },
+          { "title": "[FILLER] - Goodbye to Wano (anime-only)", "episodes": "1084", "recommendation": "optional" }
+        ]
+      },
+      {
+        "saga": "Final Saga",
+        "entries": [
+          { "title": "Egghead Arc", "episodes": "1086-1136+", "recommendation": "watch" }
+        ]
+      }
+    ]
+  }
+  

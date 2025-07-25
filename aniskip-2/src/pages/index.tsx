@@ -1,18 +1,48 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, LogIn, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const featuredAnime = [
-  {
-    title: "Mikadono San Shimai wa Angai, Choroi.",
-    episode: "S01 E02",
-    subtitle: "Her Secret",
-    image: "/placeholder-featured.jpg",
-    malScore: 7.5,
-  },
-  // Add more featured anime objects here
-];
+const [featuredAnime, setFeaturedAnime] = useState<any[]>([]);
+
+useEffect(() => {
+  const fetchTrendingSeasonalAnime = async () => {
+    const query = `
+      query {
+        Page(perPage: 3) {
+          media(type: ANIME, sort: TRENDING_DESC, season: SUMMER, seasonYear: 2025, format_in: [TV, TV_SHORT]) {
+            id
+            title {
+              romaji
+              english
+            }
+            coverImage {
+              large
+            }
+            episodes
+            averageScore
+          }
+        }
+      }
+    `;
+
+    try {
+      const response = await axios.post("https://graphql.anilist.co", {
+        query,
+      });
+
+      const results = response.data.data.Page.media;
+      setFeaturedAnime(results);
+    } catch (error) {
+      console.error("Failed to fetch trending anime:", error);
+    }
+  };
+
+  fetchTrendingSeasonalAnime();
+}, []);
+
 
 const newEpisodes = [
   { title: "Panty & Stocking 2", image: "/placeholder-ep1.jpg", watched: 13 },
@@ -93,17 +123,19 @@ const Home: React.FC = () => {
               className="absolute inset-0 w-full h-full flex"
             >
               <img
-                src={featuredAnime[carouselIndex].image}
-                alt={featuredAnime[carouselIndex].title}
+                src={featuredAnime[carouselIndex]?.coverImage?.large}
+                alt={featuredAnime[carouselIndex]?.title?.english || featuredAnime[carouselIndex]?.title?.romaji}
                 className="object-cover w-1/2 h-full rounded-l-3xl"
               />
               <div className="flex-1 flex flex-col justify-center px-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow mb-2">
-                  {featuredAnime[carouselIndex].title}
+                  {featuredAnime[carouselIndex]?.title?.english || featuredAnime[carouselIndex]?.title?.romaji}
+
                 </h2>
                 <div className="text-lg text-purple-200 mb-1">{featuredAnime[carouselIndex].episode} <span className="ml-2 text-purple-300">{featuredAnime[carouselIndex].subtitle}</span></div>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-semibold">MAL {featuredAnime[carouselIndex].malScore}</span>
+                  <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-semibold">{featuredAnime[carouselIndex]?.episodes ? `Episodes: ${featuredAnime[carouselIndex]?.episodes}` : "Ongoing"}
+                  </span>
                 </div>
               </div>
             </motion.div>

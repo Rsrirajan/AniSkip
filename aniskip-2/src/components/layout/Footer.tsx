@@ -84,7 +84,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-500 text-sm">
-            © 2024 AniSkip. All rights reserved. Made with ❤️ for anime fans.
+            ©2025 AniSkip. All rights reserved. Made with ❤️ for anime fans.
           </p>
           {/* Only show sign in/up if not logged in */}
           {!user && (

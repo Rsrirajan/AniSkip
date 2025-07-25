@@ -7,7 +7,6 @@ import Search from "./pages/Search"
 import Settings from "./pages/Settings"
 import AnimeDetails from "./pages/AnimeDetails"
 import Landing from "./pages/Landing"
-import JoinPage from "./pages/join"
 import Signup from "./pages/Signup"
 import WatchGuides from "./pages/WatchGuides"
 import { supabase } from "./lib/supabaseClient"
@@ -25,7 +24,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (loading) return null;
-  if (!user) return <Navigate to="/join" state={{ from: location }} replace />;
+  if (!user) return <Navigate to="/signup" state={{ from: location }} replace />;
   return <>{children}</>;
 }
 
@@ -48,7 +47,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<RedirectIfAuth><Landing /></RedirectIfAuth>} />
-        <Route path="/join" element={<RedirectIfAuth><JoinPage /></RedirectIfAuth>} />
         <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
         <Route
           path="/*"

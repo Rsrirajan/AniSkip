@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Anime, getTrendingAnime, getSeasonalAnime, getPopularAnime, getCurrentSeason, clearApiCache, searchAnime } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
 import { useWatchlist } from "../lib/useWatchlist";
-import { useUserPlan } from "../lib/useUserPlan";
+
 import AnimeModal from "../components/AnimeModal";
 import AnimeCard from "../components/AnimeCard";
 import { useRef } from "react";

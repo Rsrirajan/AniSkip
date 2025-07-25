@@ -21,7 +21,7 @@ export default function AnimeCard({
   onClick, 
   variant = "default", 
   showSignInButton = false, 
-  onSignInClick,
+  onSignInClick: _onSignInClick,
   isInWatchlist = false,
   onAddToWatchlist,
   onRemoveFromWatchlist,
@@ -37,12 +37,6 @@ export default function AnimeCard({
   const getTitle = () => anime.title.english || anime.title.romaji || anime.title.native;
   const getScore = () => (anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "N/A");
   
-  const handleSignIn = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onSignInClick) onSignInClick();
-    else window.location.href = '/join';
-  };
-
   const handleWatchlistAction = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsAnimating(true);

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Plus, X, Lock, Bug } from "lucide-react";
+import { Star, Plus, X } from "lucide-react";
 import { Anime } from "../services/anilist";
-import { testWatchlistConnection } from "../services/watchlistService";
+
 import { useNavigate } from "react-router-dom";
 
 interface AnimeModalProps {
@@ -29,39 +29,6 @@ const STATUS_OPTIONS = [
   "Dropped"
 ];
 
-// Only keep franchise-level guides for One Piece and Black Clover
-const EPISODE_GUIDES: Record<number, {
-  episodes: { number: number, type: "canon" | "filler" | "recap" | "mixed" }[];
-  skipTo?: number;
-  timeSavedHours?: number;
-  summary?: string;
-}> = {
-  // Example: One Piece (replace 21 with correct AniList ID)
-  21: {
-    episodes: [
-      // Fill in with corrected episode breakdowns as per user instructions (see below)
-    ],
-    summary: "Corrected One Piece guide. See code for details."
-  },
-  // Example: Black Clover (replace with correct AniList ID)
-  97940: {
-    episodes: [
-      // Fill in with corrected episode breakdowns as per user instructions (see below)
-    ],
-    summary: "Corrected Black Clover guide. See code for details."
-  }
-};
-
-// Only keep franchise-level smart watch guides for One Piece and Black Clover
-const SMART_WATCH_GUIDES: Record<number, string[]> = {
-  21: [
-    // Fill in with franchise-level One Piece guide lines
-  ],
-  97940: [
-    // Fill in with franchise-level Black Clover guide lines
-  ]
-};
-
 // Helper to fetch streaming sites from Jikan (now uses /anime/{id}/full)
 function useJikanStreamingSites(malId?: number, enabled?: boolean) {
   const [streamingSites, setStreamingSites] = useState<{ name: string; url: string }[]>([]);
@@ -84,47 +51,7 @@ function useJikanStreamingSites(malId?: number, enabled?: boolean) {
   return streamingSites;
 }
 
-// Helper to fetch all episodes from Jikan API (all pages)
-function useJikanEpisodesAll(malId?: number, enabled?: boolean) {
-  const [episodes, setEpisodes] = useState<{
-    number: number;
-    title: string;
-    filler: boolean;
-    recap: boolean;
-    synopsis?: string;
-  }[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!malId || !enabled) return;
-    setLoading(true);
-    let allEpisodes: any[] = [];
-    let page = 1;
-    let hasNext = true;
-    const fetchPage = async () => {
-      while (hasNext) {
-        const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}/episodes?page=${page}`);
-        if (!res.ok) break;
-        const json = await res.json();
-        if (Array.isArray(json.data)) {
-          allEpisodes = allEpisodes.concat(json.data.map((ep: any) => ({
-            number: ep.mal_id || ep.episode || ep.episode_id || ep.number || 0,
-            title: ep.title || `Episode ${ep.mal_id || ep.episode || ep.episode_id || ep.number || 0}`,
-            filler: ep.filler || false,
-            recap: ep.recap || false,
-            synopsis: ep.synopsis || undefined
-          })));
-        }
-        hasNext = json.pagination?.has_next_page;
-        page++;
-      }
-      setEpisodes(allEpisodes);
-      setLoading(false);
-    };
-    fetchPage().catch(() => setLoading(false));
-  }, [malId, enabled]);
-  return { episodes, loading };
-}
 
 export default function AnimeModal({ 
   anime, 
@@ -133,7 +60,6 @@ export default function AnimeModal({
   onAddToWatchlist,
   trackedAnime,
   onTrackAnime,
-  isProUser = false,
   userId,
   showSignInPrompt = false // NEW PROP
 }: AnimeModalProps) {
@@ -143,7 +69,7 @@ export default function AnimeModal({
   const [episode, setEpisode] = useState<number>(1);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [testResult, setTestResult] = useState<string>("");
+  const [, setTestResult] = useState<string>("");
 
   // Debug log for userId
   console.log('[AnimeModal] userId:', userId);
@@ -164,22 +90,12 @@ export default function AnimeModal({
   const getTitle = () => anime.title.english || anime.title.romaji || anime.title.native;
   const getScore = () => (anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "N/A");
 
-  const handleTestConnection = async () => {
-    if (!userId) {
-      setTestResult("No user ID available");
-      return;
-    }
-    
-    setTestResult("Testing connection...");
-    const result = await testWatchlistConnection(userId);
-    setTestResult(result.success ? "✅ Connection successful!" : `❌ ${result.error}`);
-    console.log('Test result:', result);
-  };
+
 
   // Use MyAnimeList ID for Jikan API if available
   const malId = (anime as any).mal_id;
   const streamingSites = useJikanStreamingSites(malId, !!userId);
-  const { episodes: jikanEpisodes, loading: episodesLoading } = useJikanEpisodesAll(malId, !!userId);
+
 
   return (
     <AnimatePresence>
@@ -487,19 +403,7 @@ export default function AnimeModal({
 
                 
 
-                {/* Smart Watch Guide - Now free for all */}
-                {anime.id && SMART_WATCH_GUIDES[anime.id] && (
-                  <div className="mt-8">
-                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Star className="w-5 h-5 text-green-400" />
-                    </h3>
-                    <ul className="list-disc pl-6 text-purple-200 space-y-1">
-                      {SMART_WATCH_GUIDES[anime.id].map((line, i) => (
-                        <li key={i}>{line}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+
 
                 {/* Streaming Sites - Only for logged-in users */}
                 {userId && streamingSites.length > 0 && (

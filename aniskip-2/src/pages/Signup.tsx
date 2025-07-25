@@ -81,7 +81,7 @@ const Signup: React.FC = () => {
       const getRedirectUrl = () => {
         // Check for environment variable first (for Vercel deployments)
         const baseUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
-        return `${baseUrl}/dashboard`;
+        return `${baseUrl}/auth-callback`;
       };
 
       console.log('OAuth redirect URL:', getRedirectUrl()); // Debug log

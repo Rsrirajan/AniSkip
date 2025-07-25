@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { Anime } from '../../services/anilist';
-import { useUserPlan } from '../../lib/useUserPlan';
+
 import { Lock, Play, SkipForward, Clock, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -81,7 +81,7 @@ const getEpisodeColor = (type: string, recommendation: string) => {
   return 'bg-gray-600 text-gray-200';
 };
 
-const getEpisodeIcon = (type: string, recommendation: string) => {
+const getEpisodeIcon = (_type: string, recommendation: string) => {
   if (recommendation === 'recommended') return <Award className="w-3 h-3" />;
   if (recommendation === 'skip') return <SkipForward className="w-3 h-3" />;
   if (recommendation === 'optional') return <Clock className="w-3 h-3" />;
@@ -93,7 +93,7 @@ const EnhancedEpisodeList: React.FC<EpisodeListProps> = ({ anime, userId }) => {
   const [loading, setLoading] = useState(true);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-  const { plan } = useUserPlan();
+
   const navigate = useNavigate();
   
   const isPro = true; // All features are now free

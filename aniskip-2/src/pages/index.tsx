@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown, LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const [featuredAnime, setFeaturedAnime] = useState<any[]>([]);
@@ -58,21 +58,10 @@ const popularAnime = [
   // Add more popular anime here
 ];
 
-const freeVsPro = [
-  { feature: "Track anime progress", free: true, pro: true },
-  { feature: "Monthly watch goals", free: true, pro: true },
-  { feature: "Discover trending anime", free: true, pro: true },
-  { feature: "Filler / Recap labels", free: false, pro: true },
-  { feature: "Smart notifications", free: false, pro: true },
-  { feature: "Time saved by skipping recaps/fillers", free: false, pro: true },
-  { feature: "Personalized watch guides", free: false, pro: true },
-  { feature: "Full viewing stats & insights", free: false, pro: true },
-  { feature: "Cross-device sync", free: false, pro: true },
-  { feature: "Priority feature access & support", free: false, pro: true },
-];
+
 
 const Home: React.FC = () => {
-  const [showPremium, setShowPremium] = useState(false);
+
   const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
+
 import { supabase } from "../../lib/supabaseClient";
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 // List of available profile images

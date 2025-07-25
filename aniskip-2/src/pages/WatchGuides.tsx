@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Clock, SkipForward, Crown } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
-import { useNavigate } from "react-router-dom";
+
 import onePieceGuide from "./op.json";
 
 const WatchGuides: React.FC = () => {
-  const { plan, loading: planLoading } = useUserPlan();
+  const { loading: planLoading } = useUserPlan();
   const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
-  const navigate = useNavigate();
+
 
   if (planLoading) {
     return (

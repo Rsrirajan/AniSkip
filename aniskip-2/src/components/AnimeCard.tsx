@@ -8,7 +8,6 @@ interface AnimeCardProps {
   onClick: (anime: Anime) => void;
   variant?: "default" | "trending" | "recommended";
   showSignInButton?: boolean;
-  onSignInClick?: () => void;
   isInWatchlist?: boolean;
   onAddToWatchlist?: (anime: Anime) => void;
   onRemoveFromWatchlist?: (anime: Anime) => void;
@@ -20,8 +19,7 @@ export default function AnimeCard({
   anime, 
   onClick, 
   variant = "default", 
-  showSignInButton = false, 
-  onSignInClick,
+  showSignInButton = false,
   isInWatchlist = false,
   onAddToWatchlist,
   onRemoveFromWatchlist,
@@ -36,12 +34,6 @@ export default function AnimeCard({
 
   const getTitle = () => anime.title.english || anime.title.romaji || anime.title.native;
   const getScore = () => (anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "N/A");
-  
-  const handleSignIn = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onSignInClick) onSignInClick();
-    else window.location.href = '/join';
-  };
 
   const handleWatchlistAction = (e: React.MouseEvent) => {
     e.stopPropagation();

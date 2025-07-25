@@ -16,12 +16,12 @@ const Footer: React.FC = () => {
     if (user) {
       navigate('/dashboard');
     } else {
-      navigate('/join');
+      navigate('/signup');
     }
   };
 
   const handleSignIn = () => {
-    navigate('/join');
+    navigate('/signup');
   };
 
   const handleSignUp = () => {

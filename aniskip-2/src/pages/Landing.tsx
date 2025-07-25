@@ -540,27 +540,27 @@ const Landing: React.FC = () => {
               </div>
             </div>
           </footer>
-
-          {/* Anime Modal */}
-          <AnimatePresence>
-            {showAnimeModal && selectedAnime && (
-              <AnimeModal
-                anime={selectedAnime}
-                isOpen={showAnimeModal}
-                onClose={() => {
-                  setShowAnimeModal(false);
-                  setSelectedAnime(null);
-                }}
-                onTrackAnime={handleTrackAnime}
-                trackedAnime={trackedMap[selectedAnime.id.toString()]}
-                isProUser={false} // Always false for free launch
-                userId={userId}
-                showSignInPrompt={true}
-              />
-            )}
-          </AnimatePresence>
         </>
       )}
+
+      {/* Anime Modal - moved outside search conditional so it works during search */}
+      <AnimatePresence>
+        {showAnimeModal && selectedAnime && (
+          <AnimeModal
+            anime={selectedAnime}
+            isOpen={showAnimeModal}
+            onClose={() => {
+              setShowAnimeModal(false);
+              setSelectedAnime(null);
+            }}
+            onTrackAnime={handleTrackAnime}
+            trackedAnime={trackedMap[selectedAnime.id.toString()]}
+            isProUser={false} // Always false for free launch
+            userId={userId}
+            showSignInPrompt={true}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

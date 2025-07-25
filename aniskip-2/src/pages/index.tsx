@@ -68,7 +68,7 @@ const Home: React.FC = () => {
   const prevSlide = () => setCarouselIndex((i) => (i - 1 + featuredAnime.length) % featuredAnime.length);
 
   const handleLogin = () => {
-    navigate('/join');
+    navigate('/signup');
   };
 
   const handleSignUp = () => {

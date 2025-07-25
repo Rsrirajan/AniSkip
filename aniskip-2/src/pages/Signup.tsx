@@ -64,14 +64,27 @@ const Signup: React.FC = () => {
 
   const handleGoogleAuth = async () => {
     try {
+      // Get the correct redirect URL for production/development
+      const getRedirectUrl = () => {
+        // Check for environment variable first (for Vercel deployments)
+        const baseUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+        return `${baseUrl}/dashboard`;
+      };
+
+      console.log('OAuth redirect URL:', getRedirectUrl()); // Debug log
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: getRedirectUrl(),
         },
       });
-      if (error) setError(error.message);
+      if (error) {
+        console.error('OAuth error:', error);
+        setError(error.message);
+      }
     } catch (error) {
+      console.error('OAuth catch error:', error);
       setError("An unexpected error occurred");
     }
   };
@@ -80,7 +93,8 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setForgotMsg(null);
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, { redirectTo: window.location.origin + '/reset' });
+    const baseUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, { redirectTo: baseUrl + '/reset' });
     if (error) setForgotMsg(error.message);
     else setForgotMsg('Password reset email sent!');
     setLoading(false);

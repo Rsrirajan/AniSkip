@@ -48,6 +48,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RedirectIfAuth><Landing /></RedirectIfAuth>} />
         <Route path="/signup" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
+        <Route path="/reset" element={<RedirectIfAuth><Signup /></RedirectIfAuth>} />
         <Route
           path="/*"
           element={

@@ -79,7 +79,7 @@ export default function Dashboard() {
   const [monthlyGoal, setMonthlyGoal] = useState<number>(getMonthlyGoal());
   const [monthlyGoalInput, setMonthlyGoalInput] = useState<string>(getMonthlyGoal().toString());
 
-  const { plan, loading: planLoading, showNsfw } = useUserPlan();
+  const { loading: planLoading, showNsfw } = useUserPlan();
 
   // Restore trendingAnime state
   const [trendingAnime, setTrendingAnime] = useState<any[]>([]);

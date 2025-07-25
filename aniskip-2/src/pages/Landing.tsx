@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Anime, getTrendingAnime, getSeasonalAnime, getPopularAnime, getCurrentSeason, clearApiCache, searchAnime } from "../services/anilist";
 import { supabase } from "../lib/supabaseClient";
 import { useWatchlist } from "../lib/useWatchlist";
-import { useUserPlan } from "../lib/useUserPlan";
+
 import AnimeModal from "../components/AnimeModal";
 import AnimeCard from "../components/AnimeCard";
 import { useRef } from "react";
@@ -540,27 +540,27 @@ const Landing: React.FC = () => {
               </div>
             </div>
           </footer>
-
-          {/* Anime Modal */}
-          <AnimatePresence>
-            {showAnimeModal && selectedAnime && (
-              <AnimeModal
-                anime={selectedAnime}
-                isOpen={showAnimeModal}
-                onClose={() => {
-                  setShowAnimeModal(false);
-                  setSelectedAnime(null);
-                }}
-                onTrackAnime={handleTrackAnime}
-                trackedAnime={trackedMap[selectedAnime.id.toString()]}
-                isProUser={false} // Always false for free launch
-                userId={userId}
-                showSignInPrompt={true}
-              />
-            )}
-          </AnimatePresence>
         </>
       )}
+
+      {/* Anime Modal - moved outside search conditional so it works during search */}
+      <AnimatePresence>
+        {showAnimeModal && selectedAnime && (
+          <AnimeModal
+            anime={selectedAnime}
+            isOpen={showAnimeModal}
+            onClose={() => {
+              setShowAnimeModal(false);
+              setSelectedAnime(null);
+            }}
+            onTrackAnime={handleTrackAnime}
+            trackedAnime={trackedMap[selectedAnime.id.toString()]}
+            isProUser={false} // Always false for free launch
+            userId={userId}
+            showSignInPrompt={true}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

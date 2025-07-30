@@ -274,7 +274,7 @@ export default function Dashboard() {
                 className="text-3xl md:text-4xl font-bold text-white mb-2"
                 variants={textVariants}
               >
-                  {profileLoading ? "Welcome back..." : `Welcome back, ${getDisplayName(profile)}`}
+                  {profileLoading && !profile ? "Welcome back..." : `Welcome back, ${getDisplayName(profile)}`}
               </motion.h1>
               <motion.p 
                 className="text-slate-400"

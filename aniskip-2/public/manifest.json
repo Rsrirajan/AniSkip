@@ -1,0 +1,21 @@
+{
+  "name": "AniSkip Pro",
+  "short_name": "AniSkip",
+  "description": "Skip the fillers, track your progress, and discover amazing anime. The ultimate anime tracking experience for true fans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 

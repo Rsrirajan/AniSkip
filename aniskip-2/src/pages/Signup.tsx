@@ -131,12 +131,21 @@ const Signup: React.FC = () => {
             <p className="text-gray-600 mb-4">
               {mode === 'signup' ? 'Please check your email (including your junk/spam folder) for a verification email from Supabase before signing in.' : 'You have been successfully signed in!'}
             </p>
-            <button
-              onClick={() => mode === 'signup' ? setMode('signin') : navigate('/dashboard')}
-              className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
-            >
-              {mode === 'signup' ? 'Go to Sign In' : 'Go to Dashboard'}
-            </button>
+            {mode === 'signup' ? (
+              <button
+                onClick={() => setMode('signin')}
+                className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+              >
+                Go to Sign In
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+              >
+                Go to Dashboard
+              </button>
+            )}
           </div>
         </motion.div>
       </div>

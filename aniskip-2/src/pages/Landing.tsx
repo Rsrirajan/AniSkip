@@ -200,7 +200,16 @@ const Landing: React.FC = () => {
       {/* Header - Simple */}
       <header className="w-full px-6 py-4 flex items-center justify-between border-b border-purple-800/40 bg-white/10 backdrop-blur-lg fixed top-0 left-0 right-0 z-50" style={{background: 'rgba(30, 27, 75, 0.5)'}}>
         {/* Logo */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}> 
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => {
+          // Close any open modals
+          setShowAnimeModal(false);
+          setSelectedAnime(null);
+          // Clear search
+          setSearchQuery("");
+          setSearchResults([]);
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}> 
           <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <Play className="w-8 h-8 text-white" />
           </div>
@@ -507,7 +516,6 @@ const Landing: React.FC = () => {
                   {animeCount > 0 && false && (
                     <div className="flex items-center gap-2 text-slate-400 text-sm">
                       <Database className="w-4 h-4" />
-                      <span>Access to {animeCount.toLocaleString()}+ anime from AniList</span>
                     </div>
                   )}
                   {!user && (

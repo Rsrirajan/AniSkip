@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, Clock, SkipForward, Crown } from "lucide-react";
+import { Star, Clock, SkipForward, Crown, Gamepad2, BookOpen, Play } from "lucide-react";
 import { useUserPlan } from "../lib/useUserPlan";
 
 import onePieceGuide from "./op.json";
@@ -8,6 +8,12 @@ import onePieceGuide from "./op.json";
 const WatchGuides: React.FC = () => {
   const { loading: planLoading } = useUserPlan();
   const [selectedFranchiseGuide, setSelectedFranchiseGuide] = useState<any>(null);
+
+  // Debug effect to verify component is loading
+  useEffect(() => {
+    console.log("🚀 WatchGuides component loaded!");
+    console.log("📊 Available guides:", ["One Piece", "Gintama", "Danganronpa"]);
+  }, []);
 
   if (planLoading) {
     return (
@@ -19,6 +25,7 @@ const WatchGuides: React.FC = () => {
 
   const gintamaGuide = {
     franchiseName: "Gintama Series",
+    note: "⚠️ IMPORTANT: Gintama anime-only episodes are almost equal in quality to the canon episodes, and it is highly recommended that all the episodes in the guide should be watched. This guide is for slightly paced viewing - if you want to binge Gintama and maybe come back to watch the whole thing again later.",
     arcs: [
       {
         saga: "Gintama (2006–2010)",
@@ -187,8 +194,74 @@ const WatchGuides: React.FC = () => {
     ],
   };
 
+  const danganronpaGuide = {
+    franchiseName: "Danganronpa Series",
+    note: "🎮 UNIQUE SERIES: Danganronpa has 0% filler in anime, but this series is unique in that there are games too (highly recommended as well). The games provide much more character development and story depth than the anime adaptations.",
+    arcs: [
+      {
+        saga: "Danganronpa: Trigger Happy Havoc / The Animation",
+        entries: [
+          { recommendation: "play", title: "Danganronpa: Trigger Happy Havoc (Game)", note: "I highly recommend you play the game since it has more time to flesh out the characters etc. The anime is the same as the video game but much more condensed.", type: "game" },
+          { recommendation: "watch", title: "Danganronpa: The Animation", note: "Same story as the game but condensed. Watch if you prefer anime over games.", type: "anime" },
+        ]
+      },
+      {
+        saga: "Danganronpa: Zero [Novel]",
+        entries: [
+          { recommendation: "optional", title: "Danganronpa: Zero (Novel)", note: "Optional but highly recommended. Provides important backstory and character development.", type: "novel" },
+          { recommendation: "optional", title: "Full Book (PDF File)", note: "Available on drive.google.com", type: "pdf" },
+          { recommendation: "optional", title: "Full Audio Book (Youtube Series)", note: "Audio version available on YouTube", type: "audio" },
+          { recommendation: "optional", title: "Short Summary (Youtube Video)", note: "Quick summary if you don't want to read the full novel", type: "summary" },
+        ]
+      },
+      {
+        saga: "Danganronpa 2: Goodbye Despair",
+        entries: [
+          { recommendation: "play", title: "Danganronpa 2: Goodbye Despair (Game)", note: "This game is the best thing in the series so enjoy it to the fullest. Full game available on Steam.", type: "game" },
+          { recommendation: "optional", title: "Short Summary (Youtube Video)", note: "Watch if you can't play the game", type: "summary" },
+        ]
+      },
+      {
+        saga: "Danganronpa: Ultra Despair Girls",
+        entries: [
+          { recommendation: "optional", title: "Danganronpa: Ultra Despair Girls (Game)", note: "Toko and Makoto's little sister trying to escape Towa City and save Byakuya. Optional but recommended. Full game available on Steam.", type: "game" },
+          { recommendation: "optional", title: "Short Summary (Youtube Video)", note: "Watch if you can't play the game", type: "summary" },
+        ]
+      },
+      {
+        saga: "Danganronpa 3: The End of Hope's Peak Academy [Anime]",
+        entries: [
+          { recommendation: "watch", title: "Watch the anime in this specific order:", note: "Future Arc [Episode 1] Then watch Despair [Episode 1], Then Future Arc [Episode 2] and Despair [Episode 2], And continue on that pattern", type: "anime" },
+          { recommendation: "watch", title: "TL;DR Pattern:", note: "1- Future Episode 1, 2- Despair Episode 1, 3- Future Episode 2, 4- Despair Episode 2, Etc...", type: "pattern" },
+        ]
+      },
+      {
+        saga: "Danganronpa 2.5 [OVA]",
+        entries: [
+          { recommendation: "watch", title: "Danganronpa 2.5 (OVA)", note: "Takes Place after the events of DR2 - Watch it before watching DR3 Hope arc. Full Episode available on YouTube.", type: "ova" },
+        ]
+      },
+      {
+        saga: "Danganronpa: Hope [OVA]",
+        entries: [
+          { recommendation: "watch", title: "Danganronpa: Hope (OVA)", note: "The final episode of Danganronpa 3", type: "ova" },
+        ]
+      },
+      {
+        saga: "Danganronpa V3: Killing Harmony",
+        entries: [
+          { recommendation: "play", title: "Danganronpa V3: Killing Harmony (Game)", note: "You better be ready to get your hope crushed. Full game available on Steam.", type: "game" },
+        ]
+      },
+    ],
+  };
+
+  // Debug log to verify guides are loaded
+  console.log("🎯 Watch Guides loaded:", { gintamaGuide, danganronpaGuide });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
+      
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -201,7 +274,7 @@ const WatchGuides: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -298,6 +371,54 @@ const WatchGuides: React.FC = () => {
               </div>
             </div>
           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="glass-effect border-slate-700 rounded-lg overflow-hidden cursor-pointer"
+            onClick={() => setSelectedFranchiseGuide(danganronpaGuide)}
+          >
+            <div className="relative">
+              <div className="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                <Gamepad2 className="w-4 h-4" /> Game Series
+              </div>
+            </div>
+            <div className="p-6">
+              <h2 className="text-xl font-bold text-white mb-2">Danganronpa Series</h2>
+              <p className="text-slate-300 text-sm mb-4 line-clamp-2">
+                Complete Danganronpa guide including games, novels, anime, and OVAs in chronological order.
+              </p>
+              <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                <div className="flex items-center gap-1">
+                  <Gamepad2 className="w-4 h-4" /> 4 games
+                </div>
+                <div className="flex items-center gap-1">
+                  <Play className="w-4 h-4" /> 1 anime
+                </div>
+                <div className="flex items-center gap-1">
+                  <BookOpen className="w-4 h-4" /> 1 novel
+                </div>
+              </div>
+              <div className="grid grid-cols-4 gap-2 text-xs mb-4">
+                <div className="bg-slate-800/50 rounded p-2 text-center">
+                  <div className="text-white font-semibold">8</div>
+                  <div className="text-slate-400">Total</div>
+                </div>
+                <div className="bg-purple-900/20 border border-purple-700/30 rounded p-2 text-center">
+                  <div className="text-purple-400 font-semibold">4</div>
+                  <div className="text-slate-400">Games</div>
+                </div>
+                <div className="bg-blue-900/20 border border-blue-700/30 rounded p-2 text-center">
+                  <div className="text-blue-400 font-semibold">1</div>
+                  <div className="text-slate-400">Anime</div>
+                </div>
+                <div className="bg-green-900/20 border border-green-700/30 rounded p-2 text-center">
+                  <div className="text-green-400 font-semibold">3</div>
+                  <div className="text-slate-400">OVAs</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {selectedFranchiseGuide && (
@@ -316,6 +437,11 @@ const WatchGuides: React.FC = () => {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h2 className="text-3xl font-bold text-white mb-2">{selectedFranchiseGuide.franchiseName}</h2>
+                  {selectedFranchiseGuide.note && (
+                    <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4 mb-4">
+                      <p className="text-yellow-200 text-sm">{selectedFranchiseGuide.note}</p>
+                    </div>
+                  )}
                   <p className="text-slate-300">Complete episode breakdown by arc and saga</p>
                 </div>
                 <button
@@ -333,7 +459,7 @@ const WatchGuides: React.FC = () => {
                       <div
                         key={j}
                         className={`p-4 rounded-lg border ${
-                          entry.recommendation === "watch"
+                          entry.recommendation === "watch" || entry.recommendation === "play"
                             ? "bg-green-900/20 border-green-700/50"
                             : entry.recommendation === "skip"
                             ? "bg-red-900/20 border-red-700/50"
@@ -343,7 +469,7 @@ const WatchGuides: React.FC = () => {
                         <div className="flex items-start gap-3">
                           <div
                             className={`w-3 h-3 mt-1 rounded-full ${
-                              entry.recommendation === "watch"
+                              entry.recommendation === "watch" || entry.recommendation === "play"
                                 ? "bg-green-500"
                                 : entry.recommendation === "skip"
                                 ? "bg-red-500"
@@ -351,9 +477,20 @@ const WatchGuides: React.FC = () => {
                             }`}
                           />
                           <div className="text-white">
-                            <div className="font-semibold">
+                            <div className="font-semibold flex items-center gap-2">
                               {entry.recommendation.toUpperCase()} - {entry.title}
                               {entry.episodes ? ` (Episodes ${entry.episodes})` : ""}
+                              {entry.type && (
+                                <span className={`px-2 py-1 rounded text-xs ${
+                                  entry.type === "game" ? "bg-purple-600" :
+                                  entry.type === "anime" ? "bg-blue-600" :
+                                  entry.type === "novel" ? "bg-green-600" :
+                                  entry.type === "ova" ? "bg-orange-600" :
+                                  "bg-gray-600"
+                                }`}>
+                                  {entry.type.toUpperCase()}
+                                </span>
+                              )}
                             </div>
                             {entry.note && (
                               <div className="text-xs text-slate-300 mt-1">{entry.note}</div>

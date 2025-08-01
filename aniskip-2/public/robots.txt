@@ -1,4 +1,34 @@
 User-agent: *
 Allow: /
 
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/private/
+
+# Allow important files
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /manifest.json
+Allow: /logo.png
+Allow: /logo.svg
+Allow: /favicon.ico
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Sitemap location
 Sitemap: https://animeskip.pro/sitemap.xml 
